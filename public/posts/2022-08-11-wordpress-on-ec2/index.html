@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        WordPress on EC2 ::
+        Stuff About Cloud — things I&#39;ve learnt while navigating through the cloud
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="WordPress on EC2#I originally had this blog hosted on Azure with a borrowed MSDN subscription credit with the idea that I would eventually get around to document what I had learnt. Unfortunately the MSDN account I was using expired before I realised.
+Silver lining is I get to do it all over again, this time in AWS, and im documenting it right away so I dont fall for the same mistake again"
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="http://stuffabout.cloud/posts/2022-08-11-wordpress-on-ec2/" />
+
+
+
+
+
+<link rel="stylesheet" href="http://stuffabout.cloud/assets/style.css" />
+
+<link rel="stylesheet" href="http://stuffabout.cloud/style.css" />
+
+
+<link
+  rel="apple-touch-icon-precomposed"
+  sizes="144x144"
+  href="http://stuffabout.cloud/img/apple-touch-icon-144-precomposed.png"
+/>
+<link rel="shortcut icon" href="http://stuffabout.cloud/img/favicon.png" />
+
+
+<link href="http://stuffabout.cloud/assets/fonts/Inter-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="http://stuffabout.cloud/assets/fonts/Inter-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="http://stuffabout.cloud/assets/fonts/Inter-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="http://stuffabout.cloud/assets/fonts/Inter-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="http://stuffabout.cloud/assets/fonts/Inter-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="http://stuffabout.cloud/assets/fonts/Inter-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="WordPress on EC2"/>
+<meta name="twitter:description" content="WordPress on EC2#I originally had this blog hosted on Azure with a borrowed MSDN subscription credit with the idea that I would eventually get around to document what I had learnt. Unfortunately the MSDN account I was using expired before I realised.
+Silver lining is I get to do it all over again, this time in AWS, and im documenting it right away so I dont fall for the same mistake again"/>
+
+
+
+<meta property="og:title" content="WordPress on EC2" />
+<meta property="og:description" content="WordPress on EC2#I originally had this blog hosted on Azure with a borrowed MSDN subscription credit with the idea that I would eventually get around to document what I had learnt. Unfortunately the MSDN account I was using expired before I realised.
+Silver lining is I get to do it all over again, this time in AWS, and im documenting it right away so I dont fall for the same mistake again" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://stuffabout.cloud/posts/2022-08-11-wordpress-on-ec2/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-08-11T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-08-11T00:00:00+00:00" /><meta property="og:site_name" content="Stuff About Cloud" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="/"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >Stuff About Cloud</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title">WordPress on EC2</h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2022-08-11
+        </span>
+
+        
+          
+        
+      
+
+      
+        <span class="post-author"
+          >— Written by Will Garbutt</span
+        >
+
+
+      
+    </div>
+
+    
+
+    
+
+    <div class="post-content">
+      
+      <h2 id="wordpress-on-ec2">
+  WordPress on EC2
+  <a href="#wordpress-on-ec2" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>I originally had this blog hosted on Azure with a borrowed MSDN subscription credit with the idea that I would eventually get around to document what I had learnt. Unfortunately the MSDN account I was using expired before I realised.<br>
+Silver lining is I get to do it all over again, this time in AWS, and im documenting it right away so I dont fall for the same mistake again</p>
+<h2 id="infrastructure">
+  Infrastructure
+  <a href="#infrastructure" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p><img src="/Images/WordPressonEC2/image1.png" alt=""></p>
+<p>The networking side of the infrastructure consists of a new VPC with a single AZ Subnet attached. With that I deployed a new Internet Gateway and new route table. I have a security group allowing SSH (Port22) and HTTPS (Port 443)</p>
+<p>I deployed a new EC2 instance and attached the networking above, configured Session Manager and attached an existing keypair.<br>
+This was deployed via CloudFormation (Github <a href="https://github.com/wgarbutt/stuffaboutcloud/blob/main/template.yaml">here</a>)</p>
+<h2 id="installing-wordpress-and-sql-db">
+  Installing WordPress and SQL DB
+  <a href="#installing-wordpress-and-sql-db" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>I am currently going through the AWS Certified Solutions Architect – Associate training course by Adrian Cantrill (Website <a href="https://learn.cantrill.io/">here</a>) and coincidently am up to a video where they do just this process. I have modified Adrian’s supplied script slightly.</p>
+<pre tabindex="0"><code># DBName=database name for wordpress
+# DBUser=mariadb user for wordpress
+# DBPassword=password for the mariadb user for wordpress
+# DBRootPassword = root password for mariadb
+</code></pre><h3 id="step-1---configure-authentication-variables-which-are-used-below">
+  STEP 1 - Configure Authentication Variables which are used below
+  <a href="#step-1---configure-authentication-variables-which-are-used-below" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<pre tabindex="0"><code>DBName=&#39;stuffaboutcloudwp&#39;
+DBUser=&#39;stuffaboutcloudwp&#39;
+DBPassword=&#39;REPLACEME&#39;
+DBRootPassword=&#39;REPLACEME&#39;
+</code></pre><h3 id="step-2---install-system-software---including-web-and-db">
+  STEP 2 - Install system software - including Web and DB
+  <a href="#step-2---install-system-software---including-web-and-db" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<pre tabindex="0"><code>sudo yum install -y mariadb-server httpd wget
+sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
+</code></pre><h3 id="step-3---web-and-db-servers-online---and-set-to-startup">
+  STEP 3 - Web and DB Servers Online - and set to startup
+  <a href="#step-3---web-and-db-servers-online---and-set-to-startup" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<pre tabindex="0"><code>sudo systemctl enable httpd
+sudo systemctl enable mariadb
+sudo systemctl start httpd
+sudo systemctl start mariadb
+</code></pre><h3 id="step-4---set-mariadb-root-password">
+  STEP 4 - Set Mariadb Root Password
+  <a href="#step-4---set-mariadb-root-password" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<pre tabindex="0"><code>mysqladmin -u root password $DBRootPassword
+</code></pre><h3 id="step-5---install-wordpress">
+  STEP 5 - Install WordPress
+  <a href="#step-5---install-wordpress" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<pre tabindex="0"><code>sudo wget http://wordpress.org/latest.tar.gz -P /var/www/html
+cd /var/www/html
+sudo tar -zxvf latest.tar.gz
+sudo cp -rvf wordpress/* .
+sudo rm -R wordpress
+sudo rm latest.tar.gz
+</code></pre><h3 id="step-6---configure-wordpress">
+  STEP 6 - Configure WordPress
+  <a href="#step-6---configure-wordpress" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<pre tabindex="0"><code>sudo cp ./wp-config-sample.php ./wp-config.php
+sudo sed -i &#34;s/&#39;database_name_here&#39;/&#39;$DBName&#39;/g&#34; wp-config.php
+sudo sed -i &#34;s/&#39;username_here&#39;/&#39;$DBUser&#39;/g&#34; wp-config.php
+sudo sed -i &#34;s/&#39;password_here&#39;/&#39;$DBPassword&#39;/g&#34; wp-config.php   
+sudo chown apache:apache * -R
+</code></pre><h3 id="step-7-create-wordpress-db">
+  STEP 7 Create WordPress DB
+  <a href="#step-7-create-wordpress-db" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<pre tabindex="0"><code>echo &#34;CREATE DATABASE $DBName;&#34; &amp;gt;&amp;gt; /tmp/db.setup
+echo &#34;CREATE USER &#39;$DBUser&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;$DBPassword&#39;;&#34; &amp;gt;&amp;gt; /tmp/db.setup
+echo &#34;GRANT ALL ON $DBName.* TO &#39;$DBUser&#39;@&#39;localhost&#39;;&#34; &amp;gt;&amp;gt; /tmp/db.setup
+echo &#34;FLUSH PRIVILEGES;&#34; &amp;gt;&amp;gt; /tmp/db.setup
+mysql -u root --password=$DBRootPassword &amp;lt; /tmp/db.setup
+sudo rm /tmp/db.setup
+</code></pre><h3 id="step-8---browse-to-httpyour_instance_public_ipv4_ip">
+  STEP 8 - Browse to http://your_instance_public_ipv4_ip
+  <a href="#step-8---browse-to-httpyour_instance_public_ipv4_ip" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p><!-- raw HTML omitted --></p>
+<!-- raw HTML omitted -->
+<h3 id="configuring-https">
+  Configuring HTTPS
+  <a href="#configuring-https" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>First step was to point my domain at my EC2 instances public IP address, this is important as the tools we use below needs to verify I own my domain name.</p>
+<p>Next I followed <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/SSL-on-amazon-linux-2.html">this</a> post made by AWS on how to configure Lets Encrypt on an EC2 instance, near the last section of the post you will see a heading named <strong>Certificate automation: Let’s Encrypt with Certbot on Amazon Linux 2</strong></p>
+<p>This will install all the components needed to use the free Lets Encrypt service and setup a Crontab to enable automatic cert renewal. Very cool</p>
+<h3 id="updating-php-from-72-to-74">
+  Updating PHP from 7.2 to 7.4
+  <a href="#updating-php-from-72-to-74" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>Some where in my deployment steps above I managed to install an older version of PHP. I was warned of this when I first logged on to WordPress, stating I was using an unsecure version of PHP and that I needed to update it as soon as possible.<br>
+Another blog to the rescue! I found <a href="https://greggborodaty.com/amazon-linux-2-upgrading-from-php-7-2-to-php-7-4/">this</a> handy blog post that detailed the steps needed to upgrade PHP</p>
+<h3 id="restoring-wordpress-from-backup">
+  Restoring WordPress from backup
+  <a href="#restoring-wordpress-from-backup" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>Luckily before my Azure Subscription ran dry I had the wisdom to install a plugin named <a href="https://updraftplus.com/">Updraft</a> that has a free option to back up your entire WordPress deployment to cloud storage such as AWS S3. I simply had to redownload the plugin on my new deployment, point it towards my existing S3 bucket and restore!
+<img src="/Images/WordPressonEC2/image2.png" alt=""></p>
+<h3 id="cost">
+  Cost
+  <a href="#cost" class="h-anchor" aria-hidden="true">#</a>
+</h3>
+<p>Its early days so far but I estimate this will cost me around $10 a month. This is running on a very small t2.micro EC2 which seems to be running things a lot quicker than my Marketplace deployment of WordPress in Azure, which coincidently drew down my monthly credit by $60 a month.</p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+            
+              <span class="button next">
+                <a href="http://stuffabout.cloud/posts/2022-08-01-docker-compose-media-stack/">
+                  <span class="button__text">Docker Compose – Media Stack</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="/"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >Stuff About Cloud</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span
+          >© 2022 Powered by
+          <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span
+        >
+        <span
+          >Theme created by
+          <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span
+        >
+      </div>
+    
+  </div>
+</footer>
+
+<script src="http://stuffabout.cloud/assets/main.js"></script>
+<script src="http://stuffabout.cloud/assets/prism.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>

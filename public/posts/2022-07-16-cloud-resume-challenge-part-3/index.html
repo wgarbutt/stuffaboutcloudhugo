@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+      <title>
+        Cloud Resume Challenge – Part 3 ::
+        Stuff About Cloud — things I&#39;ve learnt while navigating through the cloud
+      </title>
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta
+  name="description"
+  content="Step 7: Javascript#We need to include Javascript to call upon our APIs we created earlier. This took me quite a bit of time as I was struggling to find a solution that worked for me, whether I did something wrong in the earlier parts or wasn’t quite understanding things correctly I’m not sure.
+Below is my two Javascripts I created, the first one invokes out POST method, which increases the visitor count value on our DynamoDB"
+/>
+<meta
+  name="keywords"
+  content=""
+/>
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="http://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-3/" />
+
+
+
+
+
+<link rel="stylesheet" href="http://stuffabout.cloud/assets/style.css" />
+
+<link rel="stylesheet" href="http://stuffabout.cloud/style.css" />
+
+
+<link
+  rel="apple-touch-icon-precomposed"
+  sizes="144x144"
+  href="http://stuffabout.cloud/img/apple-touch-icon-144-precomposed.png"
+/>
+<link rel="shortcut icon" href="http://stuffabout.cloud/img/favicon.png" />
+
+
+<link href="http://stuffabout.cloud/assets/fonts/Inter-Italic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="http://stuffabout.cloud/assets/fonts/Inter-Regular.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="http://stuffabout.cloud/assets/fonts/Inter-Medium.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="http://stuffabout.cloud/assets/fonts/Inter-MediumItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="http://stuffabout.cloud/assets/fonts/Inter-Bold.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+<link href="http://stuffabout.cloud/assets/fonts/Inter-BoldItalic.woff2" rel="preload" type="font/woff2" as="font" crossorigin="">
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Cloud Resume Challenge – Part 3"/>
+<meta name="twitter:description" content="Step 7: Javascript#We need to include Javascript to call upon our APIs we created earlier. This took me quite a bit of time as I was struggling to find a solution that worked for me, whether I did something wrong in the earlier parts or wasn’t quite understanding things correctly I’m not sure.
+Below is my two Javascripts I created, the first one invokes out POST method, which increases the visitor count value on our DynamoDB"/>
+
+
+
+<meta property="og:title" content="Cloud Resume Challenge – Part 3" />
+<meta property="og:description" content="Step 7: Javascript#We need to include Javascript to call upon our APIs we created earlier. This took me quite a bit of time as I was struggling to find a solution that worked for me, whether I did something wrong in the earlier parts or wasn’t quite understanding things correctly I’m not sure.
+Below is my two Javascripts I created, the first one invokes out POST method, which increases the visitor count value on our DynamoDB" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-3/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-07-16T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-07-16T00:00:00+00:00" /><meta property="og:site_name" content="Stuff About Cloud" />
+
+
+
+
+
+
+
+  </head>
+  <body class="dark-theme">
+    <div class="container">
+      <header class="header">
+  <span class="header__inner">
+    <a
+  href="/"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >Stuff About Cloud</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+    <span class="header__right">
+      
+      <span class="theme-toggle">
+        <svg
+  class="theme-toggler"
+  width="24"
+  height="24"
+  viewBox="0 0 48 48"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    d="M22 41C32.4934 41 41 32.4934 41 22C41 11.5066 32.4934 3 22
+  3C11.5066 3 3 11.5066 3 22C3 32.4934 11.5066 41 22 41ZM7 22C7
+  13.7157 13.7157 7 22 7V37C13.7157 37 7 30.2843 7 22Z"
+  />
+</svg>
+
+      </span>
+    </span>
+  </span>
+</header>
+
+
+      <div class="content">
+        
+  
+  
+
+  <div class="post">
+    <h1 class="post-title">Cloud Resume Challenge – Part 3</h1>
+    <div class="post-meta">
+      
+        <span class="post-date">
+          2022-07-16
+        </span>
+
+        
+          
+        
+      
+
+      
+        <span class="post-author"
+          >— Written by Will Garbutt</span
+        >
+
+
+      
+    </div>
+
+    
+
+    
+
+    <div class="post-content">
+      
+      <h2 id="step-7-javascript">
+  Step 7: Javascript
+  <a href="#step-7-javascript" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>We need to include Javascript to call upon our APIs we created earlier. This took me quite a bit of time as I was struggling to find a solution that worked for me, whether I did something wrong in the earlier parts or wasn’t quite understanding things correctly I’m not sure.</p>
+<p>Below is my two Javascripts I created, the first one invokes out POST method, which increases the visitor count value on our DynamoDB</p>
+<pre tabindex="0"><code>&lt;script&gt;
+  fetch(&#39;https://5cabfxax81.execute-api.ap-southeast-2.amazonaws.com/Prod/&#39;, {
+    method: &#39;POST&#39;,
+    headers: {
+      &#34;Content-type&#34;: &#34;application/x-www-form-urlencoded; charset=UTF-8&#34;
+    },
+  })
+ 
+    .then(response =&gt; response.json())
+    .then(json =&gt; {
+    console.log(json);
+  });
+&lt;/script&gt;
+</code></pre><p>And the second to retrieve the value of the visitor count</p>
+<pre tabindex="0"><code>
+&lt;script&gt;
+  fetch(&#39;https://5cabfxax81.execute-api.ap-southeast-2.amazonaws.com/Prod/&#39;)
+      .then((response =&gt; response.json()))  
+      .then((data) =&gt; {document.getElementById(&#34;counter&#34;).innerHTML = data})                                
+&lt;/script&gt;
+</code></pre><p>We then exchange the value <code>counter</code> for the number from the database</p>
+<pre tabindex="0"><code>	
+&lt;p class=&#34;subDetails&#34;&gt;You are visitor number &lt;span id=&#34;counter&#34;&gt;loading...&lt;/span&gt;&lt;/p&gt; 
+</code></pre><p><img src="../Images/CloudResumeChallenge/image7.png" alt=""></p>
+<h2 id="step-12-infrastructure-as-code">
+  Step 12: Infrastructure as Code
+  <a href="#step-12-infrastructure-as-code" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>Throughout these steps I have made reference to using CloudFoundation as a first stop as much as possible. If I had to use the GUI first I would export the resources as code via <a href="https://former2.com/">Former2</a>.</p>
+<p><strong>Exporting via Former2</strong></p>
+<ul>
+<li>Create a Read-Only IAM user with programmatic access keys, Former2 will use this to scan your infrastructure for deployed resources</li>
+<li>Run through the setup wizard, it will ask you to install a plugin for your browser, ask for credentials and any other parameters you want to specify. When finished press the Scan Account button.</li>
+<li>Once scan has completed, click the Dashboard button, you will be presented with all of AWS’s services. If you click on the service you need the code for you should see your resources listed with some check boxes. If you check the box the resource code will be added to the list to be generated</li>
+<li>Click generate, you will be presented with a screen with all of the resources you selected coded in YAML.</li>
+</ul>
+<p>My template.yaml is stored on my GitHub <a href="https://github.com/wgarbutt/Cloud-Resume-Challenge/blob/main/template.yaml">here</a>. I’ve destroyed and reapplied my stack twice to confirm I haven’t missed anything. Very happy with it.</p>
+<h2 id="step-131415-source-control-and-cicd">
+  Step 13/14/15: Source Control and CI/CD
+  <a href="#step-131415-source-control-and-cicd" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>I’ve setup all of my code to store in <a href="https://github.com/wgarbutt">GitHub</a>. I save my edits in Visual Studio Code and commit to my GitHub repository.<br>
+I have created a AWS Pipeline that monitors my repository for changes and when a commit is received, downloads the repository to the S3 bucket hosting my website and replaces the files, keeping the site up to date within a few seconds of pressing commit.<br>
+I followed the post from Casey McMullen <a href="https://aws.plainenglish.io/how-to-set-up-simple-ci-cd-using-aws-codepipeline-with-github-8dc265470184">here</a></p>
+<h2 id="step-16-this-blog">
+  Step 16: This Blog
+  <a href="#step-16-this-blog" class="h-anchor" aria-hidden="true">#</a>
+</h2>
+<p>I’m not the greatest at communicating, both verbal and written, so writing this blog wasn’t something that came naturally to me. I hope this helps someone out there like other posts on the internet helped me. I am very open to feedback, so if you have anything to share please let me know. I can be reached at <a href="mailto:wgarbutt@gmail.com">wgarbutt@gmail.com</a></p>
+
+    </div>
+    
+      
+        <div class="pagination">
+          <div class="pagination__title">
+            <span class="pagination__title-h"
+              >Read other posts</span
+            >
+            <hr />
+          </div>
+          <div class="pagination__buttons">
+            
+              <span class="button previous">
+                <a href="http://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-2/">
+                  <span class="button__icon">←</span>
+                  <span class="button__text">Cloud Resume Challenge – Part 2</span>
+                </a>
+              </span>
+            
+            
+              <span class="button next">
+                <a href="http://stuffabout.cloud/posts/2022-07-14-aws-vault/">
+                  <span class="button__text">AWS Vault</span>
+                  <span class="button__icon">→</span>
+                </a>
+              </span>
+            
+          </div>
+        </div>
+      
+    
+
+    
+      
+        
+
+      
+    
+  </div>
+
+      </div>
+
+      
+        <footer class="footer">
+  <div class="footer__inner">
+    
+      <a
+  href="/"
+  class="logo"
+  style="text-decoration: none;"
+>
+  
+    <span class="logo__mark"><svg xmlns="http://www.w3.org/2000/svg" class="greater-icon" viewBox="0 0 44 44">
+  <path fill="none" d="M15 8l14.729 14.382L15 35.367" />
+</svg>
+</span>
+    <span class="logo__text"
+      >Stuff About Cloud</span
+    >
+    <span class="logo__cursor"></span>
+  
+</a>
+
+      <div class="copyright">
+        <span
+          >© 2022 Powered by
+          <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a></span
+        >
+        <span
+          >Theme created by
+          <a href="https://twitter.com/panr" target="_blank" rel="noopener">panr</a></span
+        >
+      </div>
+    
+  </div>
+</footer>
+
+<script src="http://stuffabout.cloud/assets/main.js"></script>
+<script src="http://stuffabout.cloud/assets/prism.js"></script>
+
+
+      
+    </div>
+
+    
+  </body>
+</html>
