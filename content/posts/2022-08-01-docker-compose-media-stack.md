@@ -11,7 +11,7 @@ I thought I would share my first attempt at a docker compose file. This file dep
 
 The first part of this script deploys [NZBGet][1], [Sonarr][2], [Radarr][3], and [Plex][4] containers and links to volumes for configuration data and NAS storage will be found.
 
-```
+```yaml
 version: "3.4"
 services:
   nzbget:
@@ -73,7 +73,7 @@ services:
 ```
 
 The second part setups up the actual volumes, I have mounted my NAS as a CIFS share on my Docker VM so media can be shared between Docker and other VMs when needed
-```
+```yaml
 volumes:
   downloads:
     driver: local

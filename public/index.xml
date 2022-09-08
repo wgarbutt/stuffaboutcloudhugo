@@ -5,21 +5,21 @@
     
     
     
-    <link>http://stuffabout.cloud/</link>
+    <link>https://stuffabout.cloud/</link>
     <description>Recent content on Stuff About Cloud</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 11 Aug 2022 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="http://stuffabout.cloud/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://stuffabout.cloud/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>WordPress on EC2</title>
-      <link>http://stuffabout.cloud/posts/2022-08-11-wordpress-on-ec2/</link>
+      <link>https://stuffabout.cloud/posts/2022-08-11-wordpress-on-ec2/</link>
       <pubDate>Thu, 11 Aug 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://stuffabout.cloud/posts/2022-08-11-wordpress-on-ec2/</guid>
+      <guid>https://stuffabout.cloud/posts/2022-08-11-wordpress-on-ec2/</guid>
       <description>
         
           
@@ -37,10 +37,10 @@ Silver lining is I get to do it all over again, this time in AWS, and im documen
     
     <item>
       <title>Docker Compose – Media Stack</title>
-      <link>http://stuffabout.cloud/posts/2022-08-01-docker-compose-media-stack/</link>
+      <link>https://stuffabout.cloud/posts/2022-08-01-docker-compose-media-stack/</link>
       <pubDate>Mon, 01 Aug 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://stuffabout.cloud/posts/2022-08-01-docker-compose-media-stack/</guid>
+      <guid>https://stuffabout.cloud/posts/2022-08-01-docker-compose-media-stack/</guid>
       <description>
         
           
@@ -59,10 +59,10 @@ version: &amp;#34;3.4&amp;#34; services: nzbget: container_name: nzbget image: l
     
     <item>
       <title>Cloud Resume Challenge – Part 2</title>
-      <link>http://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-2/</link>
+      <link>https://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-2/</link>
       <pubDate>Sat, 16 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-2/</guid>
+      <guid>https://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-2/</guid>
       <description>
         
           
@@ -81,10 +81,10 @@ Our Database will consist of a DynamoDB as per the recommendation on the Cloud R
     
     <item>
       <title>Cloud Resume Challenge – Part 3</title>
-      <link>http://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-3/</link>
+      <link>https://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-3/</link>
       <pubDate>Sat, 16 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-3/</guid>
+      <guid>https://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-3/</guid>
       <description>
         
           
@@ -102,10 +102,10 @@ Below is my two Javascripts I created, the first one invokes out POST method, wh
     
     <item>
       <title>AWS Vault</title>
-      <link>http://stuffabout.cloud/posts/2022-07-14-aws-vault/</link>
+      <link>https://stuffabout.cloud/posts/2022-07-14-aws-vault/</link>
       <pubDate>Thu, 14 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://stuffabout.cloud/posts/2022-07-14-aws-vault/</guid>
+      <guid>https://stuffabout.cloud/posts/2022-07-14-aws-vault/</guid>
       <description>
         
           
@@ -124,10 +124,10 @@ Here is a run through on the install process I followed.
     
     <item>
       <title>Cloud Resume Challenge – Part 1</title>
-      <link>http://stuffabout.cloud/posts/2022-07-14-cloud-resume-challenge-part-1/</link>
+      <link>https://stuffabout.cloud/posts/2022-07-14-cloud-resume-challenge-part-1/</link>
       <pubDate>Thu, 14 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://stuffabout.cloud/posts/2022-07-14-cloud-resume-challenge-part-1/</guid>
+      <guid>https://stuffabout.cloud/posts/2022-07-14-cloud-resume-challenge-part-1/</guid>
       <description>
         
           
@@ -145,10 +145,10 @@ While researching Amazon Web Services courses and certifications I stumbled acro
     
     <item>
       <title>Automated password resetting for ESXi Hosts</title>
-      <link>http://stuffabout.cloud/posts/2022-07-05-automated-password-resetting-for-esxi-hosts/</link>
+      <link>https://stuffabout.cloud/posts/2022-07-05-automated-password-resetting-for-esxi-hosts/</link>
       <pubDate>Tue, 05 Jul 2022 00:00:00 +0000</pubDate>
       
-      <guid>http://stuffabout.cloud/posts/2022-07-05-automated-password-resetting-for-esxi-hosts/</guid>
+      <guid>https://stuffabout.cloud/posts/2022-07-05-automated-password-resetting-for-esxi-hosts/</guid>
       <description>
         
           

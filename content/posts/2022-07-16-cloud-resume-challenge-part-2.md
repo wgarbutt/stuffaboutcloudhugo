@@ -17,7 +17,7 @@ I ran into an issue not quite understanding how CloudFormation wanted to have th
 
 I followed the Cloud Foundation documentation on DynamoDB [here][1]  
 Here is my the relevant CloudFoundation YAML code:
-```
+```yaml
 VisitorCountTable:
   Type: AWS::DynamoDB::Table
   Properties:
@@ -54,7 +54,7 @@ First I manually created a IAM role for my Lambda functions, I included the foll
 For this to work, we will need to create a couple of small Python scripts that the function will invoke
 
 getvisitor.py simply connects to our DynamoDB database and returns the current value of the `record_count` attribute
-```
+```python
 import json
 import boto3
 dynamodb = boto3.resource('dynamodb')
@@ -68,7 +68,7 @@ def lambda_handler(event, context):
 
 addvisitor.py is similar, this time increasing the current value of the `record_count` attribute.
 
-```
+```python
 import json
 import boto3
 dynamodb = boto3.resource('dynamodb')
@@ -95,7 +95,7 @@ We need to save and zip these two files up and upload them to a S3 bucket so the
 
 Now deploy it with the CloudFoundation YAML Code
 
-```
+```yaml
     LambdaGetVisitor:
         Type: "AWS::Lambda::Function"
         Properties:
@@ -138,7 +138,7 @@ First we create the API Gateway object, as before I have preferred to go the Clo
 
 
 
-```
+```yaml
     ApiGateway:
         Type: "AWS::ApiGateway::RestApi"
         Properties:

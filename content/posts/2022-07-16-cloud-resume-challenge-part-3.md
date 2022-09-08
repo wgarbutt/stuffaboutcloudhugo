@@ -11,7 +11,7 @@ date: 2022-07-16
 We need to include Javascript to call upon our APIs we created earlier. This took me quite a bit of time as I was struggling to find a solution that worked for me, whether I did something wrong in the earlier parts or wasn&#8217;t quite understanding things correctly I&#8217;m not sure. 
 
 Below is my two Javascripts I created, the first one invokes out POST method, which increases the visitor count value on our DynamoDB
-```
+```html
 <script>
   fetch('https://5cabfxax81.execute-api.ap-southeast-2.amazonaws.com/Prod/', {
     method: 'POST',
@@ -29,7 +29,7 @@ Below is my two Javascripts I created, the first one invokes out POST method, wh
 And the second to retrieve the value of the visitor count 
 
 
-```
+```html
 
 <script>
   fetch('https://5cabfxax81.execute-api.ap-southeast-2.amazonaws.com/Prod/')
@@ -40,7 +40,7 @@ And the second to retrieve the value of the visitor count
 
 We then exchange the value `counter` for the number from the database
 
-```
+```html
 	
 <p class="subDetails">You are visitor number <span id="counter">loading...</span></p> 
 

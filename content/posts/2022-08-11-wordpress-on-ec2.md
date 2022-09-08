@@ -25,28 +25,28 @@ This was deployed via CloudFormation (Github [here][1])
 
 I am currently going through the AWS Certified Solutions Architect &#8211; Associate training course by Adrian Cantrill (Website [here][2]) and coincidently am up to a video where they do just this process. I have modified Adrian&#8217;s supplied script slightly.
 
-```
+```bash
 # DBName=database name for wordpress
 # DBUser=mariadb user for wordpress
 # DBPassword=password for the mariadb user for wordpress
 # DBRootPassword = root password for mariadb
 ```
 ### STEP 1 - Configure Authentication Variables which are used below
-```
+```bash
 DBName='stuffaboutcloudwp'
 DBUser='stuffaboutcloudwp'
 DBPassword='REPLACEME'
 DBRootPassword='REPLACEME'
 ```
 ### STEP 2 - Install system software - including Web and DB
-```
+```bash
 sudo yum install -y mariadb-server httpd wget
 sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
 ```
 
 
 ### STEP 3 - Web and DB Servers Online - and set to startup
-```
+```bash
 sudo systemctl enable httpd
 sudo systemctl enable mariadb
 sudo systemctl start httpd
@@ -54,12 +54,12 @@ sudo systemctl start mariadb
 ```
 
 ### STEP 4 - Set Mariadb Root Password
-```
+```bash
 mysqladmin -u root password $DBRootPassword
 ```
 
 ### STEP 5 - Install WordPress
-```
+```bash
 sudo wget http://wordpress.org/latest.tar.gz -P /var/www/html
 cd /var/www/html
 sudo tar -zxvf latest.tar.gz
@@ -70,7 +70,7 @@ sudo rm latest.tar.gz
 
 
 ### STEP 6 - Configure WordPress
-```
+```bash
 sudo cp ./wp-config-sample.php ./wp-config.php
 sudo sed -i "s/'database_name_here'/'$DBName'/g" wp-config.php
 sudo sed -i "s/'username_here'/'$DBUser'/g" wp-config.php
@@ -79,7 +79,7 @@ sudo chown apache:apache * -R
 ```
 
 ### STEP 7 Create WordPress DB
-```
+```bash
 echo "CREATE DATABASE $DBName;" &gt;&gt; /tmp/db.setup
 echo "CREATE USER '$DBUser'@'localhost' IDENTIFIED BY '$DBPassword';" &gt;&gt; /tmp/db.setup
 echo "GRANT ALL ON $DBName.* TO '$DBUser'@'localhost';" &gt;&gt; /tmp/db.setup
