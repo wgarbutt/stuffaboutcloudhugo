@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on Stuff About Cloud</title>
+    <link>https://stuffabout.cloud/posts/</link>
+    <description>Recent content in Posts on Stuff About Cloud</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>2022</copyright>
+    <lastBuildDate>Thu, 11 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://stuffabout.cloud/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>WordPress on EC2</title>
+      <link>https://stuffabout.cloud/posts/2022-08-11-wordpress-on-ec2/</link>
+      <pubDate>Thu, 11 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/2022-08-11-wordpress-on-ec2/</guid>
+      <description>WordPress on EC2 I originally had this blog hosted on Azure with a borrowed MSDN subscription credit with the idea that I would eventually get around to document what I had learnt. Unfortunately the MSDN account I was using expired before I realised.
+Silver lining is I get to do it all over again, this time in AWS, and im documenting it right away so I dont fall for the same mistake again</description>
+      <content>&lt;h2 id=&#34;wordpress-on-ec2&#34;&gt;WordPress on EC2&lt;/h2&gt;
+&lt;p&gt;I originally had this blog hosted on Azure with a borrowed MSDN subscription credit with the idea that I would eventually get around to document what I had learnt. Unfortunately the MSDN account I was using expired before I realised.&lt;br&gt;
+Silver lining is I get to do it all over again, this time in AWS, and im documenting it right away so I dont fall for the same mistake again&lt;/p&gt;
+&lt;h2 id=&#34;infrastructure&#34;&gt;Infrastructure&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&#34;https://stuffabout.cloud/Images/WordPressonEC2/image1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;The networking side of the infrastructure consists of a new VPC with a single AZ Subnet attached. With that I deployed a new Internet Gateway and new route table. I have a security group allowing SSH (Port22) and HTTPS (Port 443)&lt;/p&gt;
+&lt;p&gt;I deployed a new EC2 instance and attached the networking above, configured Session Manager and attached an existing keypair.&lt;br&gt;
+This was deployed via CloudFormation (Github &lt;a href=&#34;https://github.com/wgarbutt/stuffaboutcloud/blob/main/template.yaml&#34;&gt;here&lt;/a&gt;)&lt;/p&gt;
+&lt;h2 id=&#34;installing-wordpress-and-sql-db&#34;&gt;Installing WordPress and SQL DB&lt;/h2&gt;
+&lt;p&gt;I am currently going through the AWS Certified Solutions Architect – Associate training course by Adrian Cantrill (Website &lt;a href=&#34;https://learn.cantrill.io/&#34;&gt;here&lt;/a&gt;) and coincidently am up to a video where they do just this process. I have modified Adrian’s supplied script slightly.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# DBName=database name for wordpress&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# DBUser=mariadb user for wordpress&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# DBPassword=password for the mariadb user for wordpress&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# DBRootPassword = root password for mariadb&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;step-1---configure-authentication-variables-which-are-used-below&#34;&gt;STEP 1 - Configure Authentication Variables which are used below&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;DBName&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;stuffaboutcloudwp&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;DBUser&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;stuffaboutcloudwp&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;DBPassword&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;REPLACEME&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;DBRootPassword&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;REPLACEME&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;step-2---install-system-software---including-web-and-db&#34;&gt;STEP 2 - Install system software - including Web and DB&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo yum install -y mariadb-server httpd wget
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;step-3---web-and-db-servers-online---and-set-to-startup&#34;&gt;STEP 3 - Web and DB Servers Online - and set to startup&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo systemctl enable httpd
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo systemctl enable mariadb
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo systemctl start httpd
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo systemctl start mariadb
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;step-4---set-mariadb-root-password&#34;&gt;STEP 4 - Set Mariadb Root Password&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mysqladmin -u root password $DBRootPassword
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;step-5---install-wordpress&#34;&gt;STEP 5 - Install WordPress&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo wget http://wordpress.org/latest.tar.gz -P /var/www/html
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;cd /var/www/html
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo tar -zxvf latest.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo cp -rvf wordpress/* .
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo rm -R wordpress
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo rm latest.tar.gz
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;step-6---configure-wordpress&#34;&gt;STEP 6 - Configure WordPress&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo cp ./wp-config-sample.php ./wp-config.php
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo sed -i &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;s/&amp;#39;database_name_here&amp;#39;/&amp;#39;&lt;/span&gt;$DBName&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/g&amp;#34;&lt;/span&gt; wp-config.php
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo sed -i &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;s/&amp;#39;username_here&amp;#39;/&amp;#39;&lt;/span&gt;$DBUser&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/g&amp;#34;&lt;/span&gt; wp-config.php
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo sed -i &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;s/&amp;#39;password_here&amp;#39;/&amp;#39;&lt;/span&gt;$DBPassword&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/g&amp;#34;&lt;/span&gt; wp-config.php   
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo chown apache:apache * -R
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;step-7-create-wordpress-db&#34;&gt;STEP 7 Create WordPress DB&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;CREATE DATABASE &lt;/span&gt;$DBName&lt;span style=&#34;color:#e6db74&#34;&gt;;&amp;#34;&lt;/span&gt; &amp;amp;gt;&amp;amp;gt; /tmp/db.setup
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;CREATE USER &amp;#39;&lt;/span&gt;$DBUser&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;@&amp;#39;localhost&amp;#39; IDENTIFIED BY &amp;#39;&lt;/span&gt;$DBPassword&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;;&amp;#34;&lt;/span&gt; &amp;amp;gt;&amp;amp;gt; /tmp/db.setup
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;GRANT ALL ON &lt;/span&gt;$DBName&lt;span style=&#34;color:#e6db74&#34;&gt;.* TO &amp;#39;&lt;/span&gt;$DBUser&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;@&amp;#39;localhost&amp;#39;;&amp;#34;&lt;/span&gt; &amp;amp;gt;&amp;amp;gt; /tmp/db.setup
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;echo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;FLUSH PRIVILEGES;&amp;#34;&lt;/span&gt; &amp;amp;gt;&amp;amp;gt; /tmp/db.setup
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;mysql -u root --password&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;$DBRootPassword &amp;amp;lt; /tmp/db.setup
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;sudo rm /tmp/db.setup
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;step-8---browse-to-httpyour_instance_public_ipv4_ip&#34;&gt;STEP 8 - Browse to http://your_instance_public_ipv4_ip&lt;/h3&gt;
+&lt;p&gt;&lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;!-- raw HTML omitted --&gt;
+&lt;h3 id=&#34;configuring-https&#34;&gt;Configuring HTTPS&lt;/h3&gt;
+&lt;p&gt;First step was to point my domain at my EC2 instances public IP address, this is important as the tools we use below needs to verify I own my domain name.&lt;/p&gt;
+&lt;p&gt;Next I followed &lt;a href=&#34;https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/SSL-on-amazon-linux-2.html&#34;&gt;this&lt;/a&gt; post made by AWS on how to configure Lets Encrypt on an EC2 instance, near the last section of the post you will see a heading named &lt;strong&gt;Certificate automation: Let’s Encrypt with Certbot on Amazon Linux 2&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This will install all the components needed to use the free Lets Encrypt service and setup a Crontab to enable automatic cert renewal. Very cool&lt;/p&gt;
+&lt;h3 id=&#34;updating-php-from-72-to-74&#34;&gt;Updating PHP from 7.2 to 7.4&lt;/h3&gt;
+&lt;p&gt;Some where in my deployment steps above I managed to install an older version of PHP. I was warned of this when I first logged on to WordPress, stating I was using an unsecure version of PHP and that I needed to update it as soon as possible.&lt;br&gt;
+Another blog to the rescue! I found &lt;a href=&#34;https://greggborodaty.com/amazon-linux-2-upgrading-from-php-7-2-to-php-7-4/&#34;&gt;this&lt;/a&gt; handy blog post that detailed the steps needed to upgrade PHP&lt;/p&gt;
+&lt;h3 id=&#34;restoring-wordpress-from-backup&#34;&gt;Restoring WordPress from backup&lt;/h3&gt;
+&lt;p&gt;Luckily before my Azure Subscription ran dry I had the wisdom to install a plugin named &lt;a href=&#34;https://updraftplus.com/&#34;&gt;Updraft&lt;/a&gt; that has a free option to back up your entire WordPress deployment to cloud storage such as AWS S3. I simply had to redownload the plugin on my new deployment, point it towards my existing S3 bucket and restore!
+&lt;img src=&#34;https://stuffabout.cloud/Images/WordPressonEC2/image2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;cost&#34;&gt;Cost&lt;/h3&gt;
+&lt;p&gt;Its early days so far but I estimate this will cost me around $10 a month. This is running on a very small t2.micro EC2 which seems to be running things a lot quicker than my Marketplace deployment of WordPress in Azure, which coincidently drew down my monthly credit by $60 a month.&lt;/p&gt;
+</content>
+    </item>
+    
+    <item>
+      <title>Docker Compose – Media Stack</title>
+      <link>https://stuffabout.cloud/posts/2022-08-01-docker-compose-media-stack/</link>
+      <pubDate>Mon, 01 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/2022-08-01-docker-compose-media-stack/</guid>
+      <description>I thought I would share my first attempt at a docker compose file. This file deploys the containers I need to download and manage my media files.
+The first part of this script deploys NZBGet, Sonarr, Radarr, and Plex containers and links to volumes for configuration data and NAS storage will be found.
+version: &amp;#34;3.4&amp;#34; services: nzbget: container_name: nzbget image: linuxserver/nzbget:latest restart: unless-stopped network_mode: host environment: - TZ=${TZ} # timezone, defined in .</description>
+      <content>&lt;p&gt;I thought I would share my first attempt at a docker compose file. This file deploys the containers I need to download and manage my media files.&lt;/p&gt;
+&lt;p&gt;The first part of this script deploys &lt;a href=&#34;https://nzbget.net/&#34;&gt;NZBGet&lt;/a&gt;, &lt;a href=&#34;https://sonarr.tv/&#34;&gt;Sonarr&lt;/a&gt;, &lt;a href=&#34;https://radarr.video/&#34;&gt;Radarr&lt;/a&gt;, and &lt;a href=&#34;https://www.plex.tv/&#34;&gt;Plex&lt;/a&gt; containers and links to volumes for configuration data and NAS storage will be found.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;version&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;3.4&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;services&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;nzbget&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;container_name&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;nzbget&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;image&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;linuxserver/nzbget:latest&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;restart&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;unless-stopped&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;network_mode&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;host&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;environment&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;TZ=${TZ}&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# timezone, defined in .env&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;PUID=0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;PGID=0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;volumes&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;downloads:/downloads&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# download folder&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;nzbgetconfig:/config&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# config files&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;sonarr&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;container_name&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;sonarr&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;image&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;linuxserver/sonarr:latest&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;restart&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;unless-stopped&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;network_mode&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;host&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;environment&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;PUID=0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;PGID=0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;TZ=${TZ}&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# timezone, defined in .env&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;volumes&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;sonarrconfig:/config&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# config files&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;tv:/TV&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# tv shows folder&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;downloads:/downloads&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# download folder&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;radarr&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;container_name&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;radarr&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;image&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;linuxserver/radarr:latest&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;restart&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;unless-stopped&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;network_mode&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;host&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;environment&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;PUID=0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;PGID=0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;TZ=${TZ}&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# timezone, defined in .env&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;volumes&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;radarrconfig:/config&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# config files&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;movies:/Movies&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# movies folder&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;downloads:/downloads&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# download folder&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;plex-server&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;container_name&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;plex-server&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;image&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;plexinc/pms-docker:latest&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;restart&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;unless-stopped&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;environment&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;PUID=0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;PGID=0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;TZ=${TZ}&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# timezone, defined in .env&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;network_mode&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;host&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;volumes&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;plexconfig:/config&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# plex database&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;plexconfig:/transcode&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# temp transcoded files&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;tv:/tv&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# media library&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      - &lt;span style=&#34;color:#ae81ff&#34;&gt;movies:/movies&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# media library&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;The second part setups up the actual volumes, I have mounted my NAS as a CIFS share on my Docker VM so media can be shared between Docker and other VMs when needed&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;volumes&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;downloads&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;driver&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;local&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;driver_opts&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;type&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;none&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;o&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bind&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;device&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/data/container_config/nas/Downloads&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;tv&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;driver&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;local&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;driver_opts&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;type&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;none&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;o&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bind&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;device&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/data/container_config/nas/TV&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;movies&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;driver&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;local&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;driver_opts&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;type&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;none&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;o&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bind&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;device&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/data/container_config/nas/Movies&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;plexconfig&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;driver&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;local&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;driver_opts&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;type&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;none&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;o&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bind&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;device&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/data/container_config/plex&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;sonarrconfig&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;driver&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;local&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;driver_opts&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;type&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;none&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;o&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bind&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;device&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/data/container_config/sonarr&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;radarrconfig&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;driver&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;local&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;driver_opts&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;type&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;none&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;o&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bind&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;device&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/data/container_config/radarr&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;nzbgetconfig&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;driver&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;local&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;driver_opts&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;type&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;none&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;o&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;bind&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;device&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/data/container_config/nzbget&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;I actually deploy and manage this stack via &lt;a href=&#34;https://www.portainer.io/&#34;&gt;Portainer&lt;/a&gt; as I find at this point in time the GUI very useful. Over time I hope to remove the reliance of the GUI in favour of command line.&lt;/p&gt;
+</content>
+    </item>
+    
+    <item>
+      <title>Cloud Resume Challenge – Part 2</title>
+      <link>https://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-2/</link>
+      <pubDate>Sat, 16 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-2/</guid>
+      <description>I’ve tackled some steps of the challenge out of turn here for a bit as it made sense to me to work on the Database/Lambda/API before working on the Javascript that requires them.
+Step 8: Database For this step I really leaned into trying to deploy via CloudFormation first rather than deploying via the GUI.
+Our Database will consist of a DynamoDB as per the recommendation on the Cloud Resume Challenge website.</description>
+      <content>&lt;p&gt;I’ve tackled some steps of the challenge out of turn here for a bit as it made sense to me to work on the Database/Lambda/API before working on the Javascript that requires them.&lt;/p&gt;
+&lt;h2 id=&#34;step-8-database&#34;&gt;Step 8: Database&lt;/h2&gt;
+&lt;p&gt;For this step I really leaned into trying to deploy via CloudFormation first rather than deploying via the GUI.&lt;br&gt;
+Our Database will consist of a DynamoDB as per the recommendation on the Cloud Resume Challenge website. Our table will consist of two attributes, &lt;code&gt;record_id&lt;/code&gt; and &lt;code&gt;record_count.&lt;/code&gt;&lt;br&gt;
+I ran into an issue not quite understanding how CloudFormation wanted to have the attributes presented, in the end I created just the key attribute of &lt;code&gt;record_id&lt;/code&gt; and had to manually add the &lt;code&gt;record_count&lt;/code&gt; attribute from the gui.&lt;/p&gt;
+&lt;p&gt;I followed the Cloud Foundation documentation on DynamoDB &lt;a href=&#34;https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html&#34;&gt;here&lt;/a&gt;&lt;br&gt;
+Here is my the relevant CloudFoundation YAML code:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;VisitorCountTable&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;Type&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;AWS::DynamoDB::Table&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;Properties&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;AttributeDefinitions&lt;/span&gt;: 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    -
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;AttributeName&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;record_id&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;AttributeType&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;S&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;TableName&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Visitor_Count&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;ProvisionedThroughput&lt;/span&gt;: 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;ReadCapacityUnits&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;WriteCapacityUnits&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;5&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#f92672&#34;&gt;KeySchema&lt;/span&gt;: 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    - 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;AttributeName&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;record_id&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#f92672&#34;&gt;KeyType&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;HASH&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Once created, log into the AWS GUI and find your DynamoDB table. Click add item, add the attribute &lt;code&gt;record_count&lt;/code&gt; with an value of 1&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://stuffabout.cloud/Images/CloudResumeChallenge/image2.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;step-85-and-10-lambda-and-python&#34;&gt;Step 8.5 and 10: Lambda and Python&lt;/h2&gt;
+&lt;p&gt;We’ll need to create two Lambda functions, one to get the visitor count and one to increase it.&lt;br&gt;
+I again went with the CloudFormation first approach and found I was starting to get the hang of it.&lt;br&gt;
+I followed the documentation on Lambda functions &lt;a href=&#34;https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;First I manually created a IAM role for my Lambda functions, I included the following policies&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://stuffabout.cloud/Images/CloudResumeChallenge/image3.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;For this to work, we will need to create a couple of small Python scripts that the function will invoke&lt;/p&gt;
+&lt;p&gt;getvisitor.py simply connects to our DynamoDB database and returns the current value of the &lt;code&gt;record_count&lt;/code&gt; attribute&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; json
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; boto3
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dynamodb &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; boto3&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;resource(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;dynamodb&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;table &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; dynamodb&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Table(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Visitor_Count&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;lambda_handler&lt;/span&gt;(event, context):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    response &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; table&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_item(Key&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;record_id&amp;#39;&lt;/span&gt;:&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;0&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    })
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; response&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#91;&amp;#39;Item&amp;#39;]&amp;amp;#91;&amp;#39;record_count&amp;#39;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;addvisitor.py is similar, this time increasing the current value of the &lt;code&gt;record_count&lt;/code&gt; attribute.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; json
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; boto3
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;dynamodb &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; boto3&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;resource(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;dynamodb&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;table &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; dynamodb&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Table(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Visitor_Count&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;def&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;lambda_handler&lt;/span&gt;(event, context):
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    response &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; table&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;get_item(Key&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;record_id&amp;#39;&lt;/span&gt;:&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;0&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    })
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    record_count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; response&lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&lt;/span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#91;&amp;#39;Item&amp;#39;]&amp;amp;#91;&amp;#39;record_count&amp;#39;]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    record_count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; record_count &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    print(record_count)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    response &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; table&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;put_item(Item&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;{
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;record_id&amp;#39;&lt;/span&gt;:&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;0&amp;#39;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;record_count&amp;#39;&lt;/span&gt;: record_count
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    })
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Records added successfully!&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;We need to save and zip these two files up and upload them to a S3 bucket so the Lambda function can access&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://stuffabout.cloud/Images/CloudResumeChallenge/image4.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Now deploy it with the CloudFoundation YAML Code&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;LambdaGetVisitor&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;Type&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;AWS::Lambda::Function&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;Properties&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;FunctionName&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;CloudResumeGetVisitor&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;Handler&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;getvisitor.lambda_handler&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;Architectures&lt;/span&gt;: 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;              - &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;x86_64&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;Code&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;              &lt;span style=&#34;color:#f92672&#34;&gt;S3Bucket&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;cloudresumelambdafunctions&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;              &lt;span style=&#34;color:#f92672&#34;&gt;S3Key&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;getvisitor.zip&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;Role&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;arn:aws:iam::337461354076:role/CloudResume-LambdaFunctions&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;Runtime&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;python3.9&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;LambdaAddVisitor&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;Type&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;AWS::Lambda::Function&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;Properties&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;FunctionName&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;CloudResumeAddVisitor&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;Handler&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;addvisitor.lambda_handler&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;Architectures&lt;/span&gt;: 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;              - &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;x86_64&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;Code&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;              &lt;span style=&#34;color:#f92672&#34;&gt;S3Bucket&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;cloudresumelambdafunctions&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;              &lt;span style=&#34;color:#f92672&#34;&gt;S3Key&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;addvisitor.zip&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;Role&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;arn:aws:iam::337461354076:role/CloudResume-LambdaFunctions&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;Runtime&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;python3.9&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;All going well, you should have two shiny functions in your gui&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://stuffabout.cloud/Images/CloudResumeChallenge/image5.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;step-9-api&#34;&gt;Step 9: API&lt;/h2&gt;
+&lt;p&gt;We’ll need to create ourselves a REST API with two methods being GET to reference our LambdaGetVisitor function and POST to reference our LambdaAddVisitor function.&lt;/p&gt;
+&lt;p&gt;First we create the API Gateway object, as before I have preferred to go the CloudFormation root for this deployment&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#f92672&#34;&gt;ApiGateway&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;Type&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;AWS::ApiGateway::RestApi&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#f92672&#34;&gt;Properties&lt;/span&gt;:
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;Name&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;visitors&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;ApiKeySourceType&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;HEADER&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;EndpointConfiguration&lt;/span&gt;: 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#f92672&#34;&gt;Types&lt;/span&gt;: 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                  - &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;REGIONAL&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Pretty straightforward that one.&lt;br&gt;
+Next we move onto the GET method, I had a pretty rough time trying to figure this part out as pure CloudFormation code. I ended up completing this in the GUI, exported the code via &lt;a href=&#34;https://former2.com/&#34;&gt;Former2&lt;/a&gt;, deleting from GUI and redeploying with the newly written code.&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    ApiGatewayGet:
+        Type: &amp;#34;AWS::ApiGateway::Method&amp;#34;
+        Properties:
+            RestApiId: !Ref ApiGateway
+            ResourceId: !GetAtt ApiGateway.RootResourceId
+            HttpMethod: &amp;#34;GET&amp;#34;
+            AuthorizationType: &amp;#34;NONE&amp;#34;
+            ApiKeyRequired: false
+            RequestParameters: {}
+            MethodResponses: 
+              - 
+                ResponseModels: 
+                    &amp;#34;application/json&amp;#34;: &amp;#34;Empty&amp;#34;
+                StatusCode: &amp;#34;200&amp;#34;
+            Integration: 
+                CacheNamespace: !GetAtt ApiGateway.RootResourceId
+                ContentHandling: &amp;#34;CONVERT_TO_TEXT&amp;#34;
+                IntegrationHttpMethod: &amp;#34;POST&amp;#34;
+                IntegrationResponses: 
+                  - 
+                    ResponseTemplates: {}
+                    StatusCode: &amp;#34;200&amp;#34;
+                PassthroughBehavior: &amp;#34;WHEN_NO_MATCH&amp;#34;
+                TimeoutInMillis: 29000
+                Type: &amp;#34;AWS&amp;#34;
+                Uri: !Sub &amp;#34;arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaGetVisitor}/invocations&amp;#34;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Same as above for the POST method, deployed via gui, exported code, deleted and redeployed via CloudFormation&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    ApiGatewayPost:
+        Type: &amp;#34;AWS::ApiGateway::Method&amp;#34;
+        Properties:
+            RestApiId: !Ref ApiGateway
+            ResourceId: !GetAtt ApiGateway.RootResourceId
+            HttpMethod: &amp;#34;POST&amp;#34;
+            AuthorizationType: &amp;#34;NONE&amp;#34;
+            ApiKeyRequired: false
+            RequestParameters: {}
+            MethodResponses: 
+              - 
+                ResponseModels: 
+                    &amp;#34;application/json&amp;#34;: &amp;#34;Empty&amp;#34;
+                StatusCode: &amp;#34;200&amp;#34;
+            Integration: 
+                CacheNamespace: !GetAtt ApiGateway.RootResourceId
+                ContentHandling: &amp;#34;CONVERT_TO_TEXT&amp;#34;
+                IntegrationHttpMethod: &amp;#34;POST&amp;#34;
+                IntegrationResponses: 
+                  - 
+                    ResponseTemplates: {}
+                    StatusCode: &amp;#34;200&amp;#34;
+                PassthroughBehavior: &amp;#34;WHEN_NO_MATCH&amp;#34;
+                TimeoutInMillis: 29000
+                Type: &amp;#34;AWS&amp;#34;
+                Uri: !Sub &amp;#34;arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${LambdaAddVisitor}/invocations&amp;#34;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Once I deployed I went to the GUI to test my methods, but found both reported a permission denied error when I tried to run them.&lt;br&gt;
+When deploying from the GUI you get a prompt asking if you want to give your API method access to the Lambda function, obviously that didnt happen when deploying via CloudFormation. I found &lt;a href=&#34;https://aws.amazon.com/premiumsupport/knowledge-center/api-gateway-rest-api-lambda-integrations/&#34;&gt;this&lt;/a&gt; help page that exactly explained my issue.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://stuffabout.cloud/Images/CloudResumeChallenge/image6.png&#34; alt=&#34;&#34;&gt;
+Here are my code snippets to address that problem&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;    APIGetPermissions:
+        Type: AWS::Lambda::Permission
+        Properties:
+          Action: &amp;#34;lambda:InvokeFunction&amp;#34;
+          FunctionName: !Ref LambdaGetVisitor
+          Principal: &amp;#34;apigateway.amazonaws.com&amp;#34;
+          SourceArn: arn:aws:execute-api:ap-southeast-2:337461354076:&amp;amp;lt;api-id&amp;amp;gt;/*/GET/
+
+    APIPostPermissions:
+        Type: AWS::Lambda::Permission
+        Properties:
+          Action: &amp;#34;lambda:InvokeFunction&amp;#34;
+          FunctionName: !Ref LambdaAddVisitor
+          Principal: &amp;#34;apigateway.amazonaws.com&amp;#34;
+          SourceArn: arn:aws:execute-api:ap-southeast-2:337461354076:&amp;amp;lt;api-id&amp;amp;gt;/*/POST/
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Thats it for now, part 3 will try and merge this all together and get a nice counter on our Resume&lt;/p&gt;
+</content>
+    </item>
+    
+    <item>
+      <title>Cloud Resume Challenge – Part 3</title>
+      <link>https://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-3/</link>
+      <pubDate>Sat, 16 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-3/</guid>
+      <description>Step 7: Javascript We need to include Javascript to call upon our APIs we created earlier. This took me quite a bit of time as I was struggling to find a solution that worked for me, whether I did something wrong in the earlier parts or wasn’t quite understanding things correctly I’m not sure.
+Below is my two Javascripts I created, the first one invokes out POST method, which increases the visitor count value on our DynamoDB</description>
+      <content>&lt;h2 id=&#34;step-7-javascript&#34;&gt;Step 7: Javascript&lt;/h2&gt;
+&lt;p&gt;We need to include Javascript to call upon our APIs we created earlier. This took me quite a bit of time as I was struggling to find a solution that worked for me, whether I did something wrong in the earlier parts or wasn’t quite understanding things correctly I’m not sure.&lt;/p&gt;
+&lt;p&gt;Below is my two Javascripts I created, the first one invokes out POST method, which increases the visitor count value on our DynamoDB&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-html&#34; data-lang=&#34;html&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;script&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;fetch&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;https://5cabfxax81.execute-api.ap-southeast-2.amazonaws.com/Prod/&amp;#39;&lt;/span&gt;, {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;method&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;POST&amp;#39;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;headers&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Content-type&amp;#34;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;:&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;application/x-www-form-urlencoded; charset=UTF-8&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    },
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  })
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    .&lt;span style=&#34;color:#a6e22e&#34;&gt;then&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;response&lt;/span&gt; =&amp;gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;response&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;json&lt;/span&gt;())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    .&lt;span style=&#34;color:#a6e22e&#34;&gt;then&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;json&lt;/span&gt; =&amp;gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;json&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  });
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;script&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;And the second to retrieve the value of the visitor count&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-html&#34; data-lang=&#34;html&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;script&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#a6e22e&#34;&gt;fetch&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;https://5cabfxax81.execute-api.ap-southeast-2.amazonaws.com/Prod/&amp;#39;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      .&lt;span style=&#34;color:#a6e22e&#34;&gt;then&lt;/span&gt;((&lt;span style=&#34;color:#a6e22e&#34;&gt;response&lt;/span&gt; =&amp;gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;response&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;json&lt;/span&gt;()))  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      .&lt;span style=&#34;color:#a6e22e&#34;&gt;then&lt;/span&gt;((&lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt;) =&amp;gt; {document.&lt;span style=&#34;color:#a6e22e&#34;&gt;getElementById&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;counter&amp;#34;&lt;/span&gt;).&lt;span style=&#34;color:#a6e22e&#34;&gt;innerHTML&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;data&lt;/span&gt;})                                
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;script&lt;/span&gt;&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;We then exchange the value &lt;code&gt;counter&lt;/code&gt; for the number from the database&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-html&#34; data-lang=&#34;html&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;	
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;p&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;subDetails&amp;#34;&lt;/span&gt;&amp;gt;You are visitor number &amp;lt;&lt;span style=&#34;color:#f92672&#34;&gt;span&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;id&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;counter&amp;#34;&lt;/span&gt;&amp;gt;loading...&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;span&lt;/span&gt;&amp;gt;&amp;lt;/&lt;span style=&#34;color:#f92672&#34;&gt;p&lt;/span&gt;&amp;gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;img src=&#34;../Images/CloudResumeChallenge/image7.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;step-12-infrastructure-as-code&#34;&gt;Step 12: Infrastructure as Code&lt;/h2&gt;
+&lt;p&gt;Throughout these steps I have made reference to using CloudFoundation as a first stop as much as possible. If I had to use the GUI first I would export the resources as code via &lt;a href=&#34;https://former2.com/&#34;&gt;Former2&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Exporting via Former2&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Create a Read-Only IAM user with programmatic access keys, Former2 will use this to scan your infrastructure for deployed resources&lt;/li&gt;
+&lt;li&gt;Run through the setup wizard, it will ask you to install a plugin for your browser, ask for credentials and any other parameters you want to specify. When finished press the Scan Account button.&lt;/li&gt;
+&lt;li&gt;Once scan has completed, click the Dashboard button, you will be presented with all of AWS’s services. If you click on the service you need the code for you should see your resources listed with some check boxes. If you check the box the resource code will be added to the list to be generated&lt;/li&gt;
+&lt;li&gt;Click generate, you will be presented with a screen with all of the resources you selected coded in YAML.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;My template.yaml is stored on my GitHub &lt;a href=&#34;https://github.com/wgarbutt/Cloud-Resume-Challenge/blob/main/template.yaml&#34;&gt;here&lt;/a&gt;. I’ve destroyed and reapplied my stack twice to confirm I haven’t missed anything. Very happy with it.&lt;/p&gt;
+&lt;h2 id=&#34;step-131415-source-control-and-cicd&#34;&gt;Step 13/14/15: Source Control and CI/CD&lt;/h2&gt;
+&lt;p&gt;I’ve setup all of my code to store in &lt;a href=&#34;https://github.com/wgarbutt&#34;&gt;GitHub&lt;/a&gt;. I save my edits in Visual Studio Code and commit to my GitHub repository.&lt;br&gt;
+I have created a AWS Pipeline that monitors my repository for changes and when a commit is received, downloads the repository to the S3 bucket hosting my website and replaces the files, keeping the site up to date within a few seconds of pressing commit.&lt;br&gt;
+I followed the post from Casey McMullen &lt;a href=&#34;https://aws.plainenglish.io/how-to-set-up-simple-ci-cd-using-aws-codepipeline-with-github-8dc265470184&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&#34;step-16-this-blog&#34;&gt;Step 16: This Blog&lt;/h2&gt;
+&lt;p&gt;I’m not the greatest at communicating, both verbal and written, so writing this blog wasn’t something that came naturally to me. I hope this helps someone out there like other posts on the internet helped me. I am very open to feedback, so if you have anything to share please let me know. I can be reached at &lt;a href=&#34;mailto:wgarbutt@gmail.com&#34;&gt;wgarbutt@gmail.com&lt;/a&gt;&lt;/p&gt;
+</content>
+    </item>
+    
+    <item>
+      <title>AWS Vault</title>
+      <link>https://stuffabout.cloud/posts/2022-07-14-aws-vault/</link>
+      <pubDate>Thu, 14 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/2022-07-14-aws-vault/</guid>
+      <description>Let me tell you about a neat little tool I recently discovered to make AWS logins easier. Its called AWS Vault, its developed by a third party named 99Designs. The link to the GitHub repository is here.
+AWS Vault allows you to store IAM credentials to your OS keystore and then generates temporary credentials from those to use for your chosen shell. I myself use Windows and Powershell.
+Here is a run through on the install process I followed.</description>
+      <content>&lt;p&gt;Let me tell you about a neat little tool I recently discovered to make AWS logins easier. Its called AWS Vault, its developed by a third party named 99Designs. The link to the GitHub repository is &lt;a href=&#34;https://github.com/99designs/aws-vault&#34;&gt;here&lt;/a&gt;.&lt;br&gt;
+AWS Vault allows you to store IAM credentials to your OS keystore and then generates temporary credentials from those to use for your chosen shell. I myself use Windows and Powershell.&lt;br&gt;
+Here is a run through on the install process I followed. Make sure you already have AWS CLI installed as the profile and configurations located in ~/.aws/config are used as part of AWS Vaults configuration.&lt;/p&gt;
+&lt;h3 id=&#34;install-chocolatey&#34;&gt;Install Chocolatey&lt;/h3&gt;
+&lt;p&gt;There are a number of different ways to install AWS Vault, with one of them using &lt;a href=&#34;https://chocolatey.org/packages/aws-vault&#34;&gt;Chocolatey&lt;/a&gt;. I have seen many references to Chocolatey that I decided this approach would be the most useful for myself.&lt;br&gt;
+Its a simple one liner to get installed in Powershell:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Set-ExecutionPolicy Bypass -Scope &lt;span style=&#34;color:#66d9ef&#34;&gt;Process&lt;/span&gt; -Force &lt;span style=&#34;color:#66d9ef&#34;&gt;[System.Net.ServicePointManager]&lt;/span&gt;::SecurityProtocol = &lt;span style=&#34;color:#66d9ef&#34;&gt;[System.Net.ServicePointManager]&lt;/span&gt;::SecurityProtocol &lt;span style=&#34;color:#f92672&#34;&gt;-bor&lt;/span&gt; 3072; iex ((New-Object System.Net.WebClient).DownloadString(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;https://community.chocolatey.org/install.ps1&amp;#39;&lt;/span&gt;))
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;install-aws-vault&#34;&gt;Install AWS Vault&lt;/h3&gt;
+&lt;p&gt;Next we need to simply run the following command in Powershell to install AWS Vault&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;choco install aws-vault
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;configuring-aws-vault&#34;&gt;Configuring AWS Vault&lt;/h3&gt;
+&lt;p&gt;Now run the command to add IAM credentials to the credential store. This will prompt you for the Access and Secret key for your IAM user, this only shows once on screen from the AWS console so you may need to create new a new keyset&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;aws-vault add &amp;amp;lt;myiamuser&amp;amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Enter Access Key ID&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt; XXXXXXXXXX
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Enter Secret Key&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt; XXXXXXXXXXXXX
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now you should be all set to utilise the convenience of store credentials&lt;/p&gt;
+&lt;p&gt;For me, the biggest feature is the ability to login to the AWS console as any of your saved users&lt;br&gt;
+For example, I run &lt;code&gt;aws-vault login will&lt;/code&gt; from powershell which logs me in to the AWS console for a short period of time, enough for me to complete anything I may need.&lt;br&gt;
+I have recently started using AWS SAM to wrap around some CloudFormation code I have been playing with, all I need to do to deploy my updates is type &lt;code&gt;aws-vault exec will --no-session -- sam deploy&lt;/code&gt; and the job is done, no credentials needed!&lt;/p&gt;
+&lt;h3 id=&#34;how-it-works&#34;&gt;How it works&lt;/h3&gt;
+&lt;p&gt;AWS Vault uses Amazon&amp;rsquo;s STS service to generate &lt;a href=&#34;https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp.html&#34;&gt;temporary credentials&lt;/a&gt; via the &lt;code&gt;GetSessionToken&lt;/code&gt; or &lt;code&gt;AssumeRole&lt;/code&gt; API calls. These expire in a short period of time, so the risk of leaking credentials is reduced.&lt;/p&gt;
+</content>
+    </item>
+    
+    <item>
+      <title>Cloud Resume Challenge – Part 1</title>
+      <link>https://stuffabout.cloud/posts/2022-07-14-cloud-resume-challenge-part-1/</link>
+      <pubDate>Thu, 14 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/2022-07-14-cloud-resume-challenge-part-1/</guid>
+      <description>I&amp;rsquo;m the kind of person who is never done with learning and trying to align my skillset with industry demand. I&amp;rsquo;ve done a lot of VMWare training and certification over the years and decided it was time to branch out to one of the popular public cloud offerings.
+While researching Amazon Web Services courses and certifications I stumbled across the Cloud Resume Challenge. The challenge is a 16 step project designed to show off the skills typically required of a cloud engineer, specific to the flavour of cloud provider you are interested in (AWS, Azure, or Google).</description>
+      <content>&lt;p&gt;I&amp;rsquo;m the kind of person who is never done with learning and trying to align my skillset with industry demand. I&amp;rsquo;ve done a lot of VMWare training and certification over the years and decided it was time to branch out to one of the popular public cloud offerings.&lt;/p&gt;
+&lt;p&gt;While researching Amazon Web Services courses and certifications I stumbled across the Cloud Resume Challenge. The challenge is a 16 step project designed to show off the skills typically required of a cloud engineer, specific to the flavour of cloud provider you are interested in (AWS, Azure, or Google).&lt;/p&gt;
+&lt;p&gt;Here are the steps I took as part of the challenge, they are referenced from the Cloud Resume Challenge website&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://cloudresumechallenge.dev/docs/the-challenge/aws/&#34;&gt;https://cloudresumechallenge.dev/docs/the-challenge/aws/&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;step-1-certification&#34;&gt;Step 1: Certification&lt;/h3&gt;
+&lt;p&gt;For this I had to sit and pass the AWS Cloud Practitioner certification. (More details on this certification &lt;a href=&#34;https://aws.amazon.com/certification/certified-cloud-practitioner/&#34;&gt;here&lt;/a&gt;)&lt;br&gt;
+I used Stephane Maarek&amp;rsquo;s Ultimate AWS Certified Cloud Practitioner – 2022 Udemy course (&lt;a href=&#34;https://www.udemy.com/share/103a093@Xyy5BUVKwUTNgK4T9fYuttnh2s3pKp7w8ogebGWcUkt4f_lZ2kycxHVTRAWWeMC-wQ==/&#34;&gt;Link&lt;/a&gt;) as well as his 6 practice exams (&lt;a href=&#34;https://www.udemy.com/share/103e7s3@nproIormrwH46Z8rw68C34SfBvUi69yf-VseCS0INp1bETewtEUfUJFqxveq6m9CCg==/&#34;&gt;Link&lt;/a&gt;).&lt;br&gt;
+I found Stephanes course to be tightly packed and didn&amp;rsquo;t drag on too much, if you didn&amp;rsquo;t quite understand a particular topic you could always dive into it more using AWS&amp;rsquo;s available resources.&lt;br&gt;
+The practice exams gave very detailed explanations of the available answers and highlighted areas where I needed to study more.&lt;br&gt;
+I sat the exam from home and was told to check in half an hour before my exam time. I really needed that extra half an hour as the identity and room setup verification took nearly that whole time.&lt;br&gt;
+I passed the exam with 803/1000&lt;/p&gt;
+&lt;h3 id=&#34;step-2-html-resume&#34;&gt;Step 2: HTML Resume&lt;/h3&gt;
+&lt;p&gt;When I first left school I signed up to do a Network engineering course. It had a very small module on web design and coding, that was the last time I ever wrote in HTML. A poster on Reddit suggested finding some inspiration on a site called &lt;a href=&#34;http://codepen.io&#34;&gt;Codepen.io&lt;/a&gt;. There I found a clean simple template that I could use as a starting point.&lt;br&gt;
+I saved my code to my GitHub &lt;a href=&#34;https://github.com/wgarbutt/CloudResume/blob/main/index.html&#34;&gt;here.&lt;/a&gt; (Spoiler alert, you can see the finished project &lt;a href=&#34;https://will-garbutt.me&#34;&gt;here&lt;/a&gt;)&lt;/p&gt;
+&lt;h3 id=&#34;step-3-css&#34;&gt;Step 3: CSS&lt;/h3&gt;
+&lt;p&gt;My resume needed to be styled with CSS. I would be the worst choice for a game of Pictionary and my design imagination is non-existent. I scoped out &lt;a href=&#34;http://codepen.io&#34;&gt;Codepen.io&lt;/a&gt; again and luckily found a suitable template for my css file. I made a number of adjustments and learnt quite a bit about css while I was at it.&lt;br&gt;
+I link to this file on my GitHub &lt;a href=&#34;https://github.com/wgarbutt/CloudResume/blob/main/style.css&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&#34;step-4-static-website&#34;&gt;Step 4: Static Website&lt;/h3&gt;
+&lt;p&gt;My HTML files are stored on an AWS S3 bucket configured to be a static website. I found this to be pretty straight forward to setup. Here is the steps I needed to do to configure a AWS S3 static website.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Deploy your empty bucket. You&amp;rsquo;ll need to name the bucket the same name as your domain. AWS uses the host header in the web request to route traffic to the appropriate bucket
+&lt;img src=&#34;https://stuffabout.cloud/Images/CloudResumeChallenge/image1.png&#34; alt=&#34;&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Configure the bucket for static web hosting. On the properties of your bucket you should see an option “Static website hosting”, Select the option “Use this bucket to host a website”, enter “index.html” as the index document&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Your bucket is now configured for static website hosting and you should have an S3 website URL listed at the bottom of the bucket property page&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;step-56-dns-and-https&#34;&gt;Step 5/6: DNS and HTTPS&lt;/h3&gt;
+&lt;p&gt;I purchased myself a domain name &lt;a href=&#34;http://will-garbutt.me&#34;&gt;will-garbutt.me&lt;/a&gt; for around $50. The challenge suggests using AWS Route 53 to host the DNS for your domain but since I am also doing some Terraform learning and playing with deploying resources using code I found that AWS considers a domain that was stood up, deleted, and stood up again to be two domains and charging me $10 each time I try.&lt;/p&gt;
+&lt;p&gt;For this I used Cloudflare as it has a well documented Terraform provider module and is free no matter how many times I have deployed and destroyed resources. In my Terrafrom GitHub Repository (&lt;a href=&#34;https://github.com/wgarbutt/Terraform&#34;&gt;link&lt;/a&gt;) I have both AWS and Cloudflare code to setup DNS.&lt;/p&gt;
+&lt;p&gt;Cloudflare also has a simple way to enable HTTPS with just a click of a button.&lt;/p&gt;
+&lt;p&gt;Part 2 will be coming soon!&lt;/p&gt;
+</content>
+    </item>
+    
+    <item>
+      <title>Automated password resetting for ESXi Hosts</title>
+      <link>https://stuffabout.cloud/posts/2022-07-05-automated-password-resetting-for-esxi-hosts/</link>
+      <pubDate>Tue, 05 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/2022-07-05-automated-password-resetting-for-esxi-hosts/</guid>
+      <description>A few months ago I was tasked with finding a solution for resetting root passwords for 800+ VMWare ESXi hosts on a regular schedule.
+We had recently completed a project to move our credential store to Passwordstate and had noticed it had some functionality around automating resetting and validating credentials.
+I initially started looking at the built-in Linux scripts which utilises SSH connections, something we have disabled for our ESXi hosts for security.</description>
+      <content>&lt;p&gt;A few months ago I was tasked with finding a solution for resetting root passwords for 800+ VMWare ESXi hosts on a regular schedule.&lt;/p&gt;
+&lt;p&gt;We had recently completed a project to move our credential store to &lt;a href=&#34;https://www.clickstudios.com.au&#34;&gt;Passwordstate&lt;/a&gt; and had noticed it had some functionality around automating resetting and validating credentials.&lt;/p&gt;
+&lt;p&gt;I initially started looking at the built-in Linux scripts which utilises SSH connections, something we have disabled for our ESXi hosts for security.&lt;/p&gt;
+&lt;p&gt;Searching through forums I found a post where someone used PowerCLI to do the heavy lifting but found the post didnt quite give me everything I needed to complete the project.&lt;/p&gt;
+&lt;p&gt;I made some custom scripts that do a pretty good job at completing the solution.&lt;/p&gt;
+&lt;p&gt;Password reset and password validation scripts:&lt;/p&gt;
+&lt;p&gt;We need to talk about these custom scripts first, as we need the IDs of the script to fill in the JSON data for scripted host ingest&lt;/p&gt;
+&lt;h3 id=&#34;setting-the-esxi-password-script&#34;&gt;Setting the ESXi Password Script:&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;Function&lt;/span&gt; Set-ESXiPassword {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   [&lt;span style=&#34;color:#66d9ef&#34;&gt;CmdletBinding&lt;/span&gt;()]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   &lt;span style=&#34;color:#66d9ef&#34;&gt;param&lt;/span&gt; (
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;[String]&lt;/span&gt;$HostName,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;[String]&lt;/span&gt;$UserName,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;[String]&lt;/span&gt;$OldPassword,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;[String]&lt;/span&gt;$NewPassword
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   )    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      $Connection = Connect-VIServer $HostName -User $UserName -Password $OldPassword
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   } 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   &lt;span style=&#34;color:#66d9ef&#34;&gt;catch&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;switch&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-wildcard&lt;/span&gt; ($error[0].Exception.ToString().ToLower()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;*incorrect user*&amp;#34;&lt;/span&gt; { Write-Output &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Incorrect username or password on host &amp;#39;$HostName&amp;#39;&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;*&amp;#34;&lt;/span&gt; { write-output $error[0].Exception.ToString().ToLower() &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      $change = Set-VMHostAccount -UserAccount $UserName -Password $NewPassword | out-string
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; ($change &lt;span style=&#34;color:#f92672&#34;&gt;-like&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;*root*&amp;#39;&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         Write-Output &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Success&amp;#34;&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; { 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         Write-Output &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Failed&amp;#34;&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      Disconnect-Viserver * -confirm&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;$false
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   } 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   &lt;span style=&#34;color:#66d9ef&#34;&gt;catch&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      &lt;span style=&#34;color:#66d9ef&#34;&gt;switch&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-wildcard&lt;/span&gt; ($error[0].Exception.ToString().ToLower()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;*not currently connected*&amp;#34;&lt;/span&gt; { Write-Output &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;It wasn&amp;#39;t possible to connect to &amp;#39;$HostName&amp;#39;&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;*weak password*&amp;#34;&lt;/span&gt; { Write-Output &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Failed to execute script correctly against Host &amp;#39;$HostName&amp;#39; for the account &amp;#39;$UserName&amp;#39;. It appears the new password did not meet the password complexity requirements on the host.&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;*&amp;#34;&lt;/span&gt; { write-output $error[0].Exception.ToString().ToLower() &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;         &lt;span style=&#34;color:#66d9ef&#34;&gt;default&lt;/span&gt; { Write-Output &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Got here&amp;#34;&lt;/span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;      }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Set-ESXiPassword -HostName &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;[HostName]&amp;#39;&lt;/span&gt; -UserName &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;[UserName]&amp;#39;&lt;/span&gt; -OldPassword &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;[OldPassword]&amp;#39;&lt;/span&gt; -NewPassword &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;[NewPassword]&amp;#39;&lt;/span&gt;   
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This script logs into a host directly via powershell and powercli modules, Passwordstate passes the common variables such as OldPassword, NewPasswork, Username etc. The Set-VMHostAccount command is actually doing all the heavy lifting here. The rest of the script is some simple error handling.&lt;/p&gt;
+&lt;p&gt;PowerCLI is baked into every ESXi host and only requires powershell to be open from the Passwordstate webserver to the host (port 443).&lt;/p&gt;
+&lt;h3 id=&#34;password-validation-script&#34;&gt;Password Validation Script&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;Function&lt;/span&gt; Validate-ESXiPassword {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    [&lt;span style=&#34;color:#66d9ef&#34;&gt;CmdletBinding&lt;/span&gt;()]
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;param&lt;/span&gt; (
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;[String]&lt;/span&gt;$HostName,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;[String]&lt;/span&gt;$UserName,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;[String]&lt;/span&gt;$CurrentPassword
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    )   
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    $ErrorActionPreference = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Stop&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;       
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt; {   
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        $Connection = Connect-VIServer $HostName -User $UserName -Password $CurrentPassword 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; ($Connection.isconnected) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Write-Output &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Success&amp;#34;&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; { 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Write-Output &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Failed&amp;#34;&lt;/span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }   
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;     
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;catch&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;switch&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-wildcard&lt;/span&gt; ($error[0].Exception.ToString().ToLower()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;*incorrect user*&amp;#34;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                Write-Output &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Incorrect username or password on host &amp;#39;$HostName&amp;#39;&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;break&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                Disconnect-VIServer $HostName -Force -Confirm&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;$false
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;default&lt;/span&gt; { Write-Output &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Error is: &lt;/span&gt;$($error[0].Exception.message)&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt; }                   
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;           
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Validate-ESXiPassword -HostName &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;[HostName]&amp;#39;&lt;/span&gt; -UserName &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;[UserName]&amp;#39;&lt;/span&gt; -CurrentPassword &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;[CurrentPassword]&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;This script simply attempts to connect to the host in question via Powershell.&lt;/p&gt;
+&lt;p&gt;The success criteria simply looks for the word root in the output, this may be foolish of me, but there isn&amp;rsquo;t much of a result from the command to parse for a successful result&lt;/p&gt;
+&lt;p&gt;If the command fails it should be captured by my catch commands&lt;/p&gt;
+&lt;h3 id=&#34;hostpassword-entry&#34;&gt;Host/Password Entry:&lt;/h3&gt;
+&lt;p&gt;All of our hosts are domain joined so host discovery was rather straightforward enough by using the built in utility in Passwordstate. Unfortunately there was no easy way to automatically discover host accounts, but since we are only dealing with Root here we can script adding of password entries. You&amp;rsquo;ll need to get your custom script IDs from the ones you created above. This is a one off script and took around one minute to add 800 hosts&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;Connect-VIServer (your vcenter server)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$hostlist = get-vmhost 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$Creds = Get-Credential
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;$PasswordstateUrl = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;https://passwordstateurl/winapi/passwords&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;foreach&lt;/span&gt; ($hostname &lt;span style=&#34;color:#66d9ef&#34;&gt;in&lt;/span&gt; $hostlist) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   Write-Host &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;I am working on host &lt;/span&gt;$($Hostname.name)&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   $jsonData = &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    {
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        &amp;#34;PasswordListID&amp;#34;:&amp;#34;existingpasswordlistID&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        &amp;#34;Title&amp;#34;:&amp;#34;&amp;#39;&lt;/span&gt; + $($hostname.name) + &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        &amp;#34;UserName&amp;#34;:&amp;#34;root&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        &amp;#34;password&amp;#34;:&amp;#34;existingpassword&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        &amp;#34;hostname&amp;#34;:&amp;#34;&amp;#39;&lt;/span&gt; + $($hostname.name) + &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        &amp;#34;AccountTypeID&amp;#34;: &amp;#34;34&amp;#34;, (VMWare)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        &amp;#34;PasswordResetEnabled&amp;#34;: false,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        &amp;#34;EnablePasswordResetSchedule&amp;#34;: true,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        &amp;#34;ScriptID&amp;#34;: &amp;#34;28&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        &amp;#34;HeartbeatEnabled&amp;#34;: true,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;        &amp;#34;ValidationScriptID&amp;#34;: &amp;#34;22&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;    &amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   Write-Host  $jsondata
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   $result = Invoke-Restmethod -Method Post -Uri $PasswordstateUrl -ContentType &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;application/json&amp;#34;&lt;/span&gt; -Body $jsonData -Credential $Creds
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   Write-Host &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Disconnecting vCenter&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;   Disconnect-Viserver * -confirm&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;:&lt;/span&gt;$false
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content>
+    </item>
+    
+  </channel>
+</rss>

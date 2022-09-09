@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <title>Posts :: Stuff About Cloud</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="" />
+<meta name="keywords" content="ESXi, VMWare, AWS, Amazon, Docker, Cloud, Blog" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://stuffabout.cloud/posts/" />
+
+
+
+
+<link rel="stylesheet" href="https://stuffabout.cloud/assets/style.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://stuffabout.cloud/img/apple-touch-icon-192x192.png">
+
+  <link rel="shortcut icon" href="https://stuffabout.cloud/img/favicon/orange.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+  
+    <meta name="twitter:site" content="" />
+  
+    <meta name="twitter:creator" content="" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Posts">
+<meta property="og:description" content="" />
+<meta property="og:url" content="https://stuffabout.cloud/posts/" />
+<meta property="og:site_name" content="Stuff About Cloud" />
+
+  
+    <meta property="og:image" content="https://stuffabout.cloud/img/favicon/orange.png">
+  
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+
+
+
+  <link href="/posts/index.xml" rel="alternate" type="application/rss+xml" title="Stuff About Cloud" />
+
+
+
+
+
+
+
+
+
+</head>
+<body class="orange">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    Stuff About Cloud
+  </div>
+</a>
+
+    </div>
+    
+  </div>
+  
+</header>
+
+
+  <div class="content">
+    
+  
+  <div class="posts">
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://stuffabout.cloud/posts/2022-08-11-wordpress-on-ec2/">WordPress on EC2</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2022-08-11
+          </span>
+          
+            <span class="post-author">:: Will Garbutt</span>
+          
+        </div>
+
+        
+
+        
+
+
+      
+        <div class="post-content">
+          
+            WordPress on EC2 I originally had this blog hosted on Azure with a borrowed MSDN subscription credit with the idea that I would eventually get around to document what I had learnt. Unfortunately the MSDN account I was using expired before I realised.
+Silver lining is I get to do it all over again, this time in AWS, and im documenting it right away so I dont fall for the same mistake again
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/2022-08-11-wordpress-on-ec2/">Read more →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://stuffabout.cloud/posts/2022-08-01-docker-compose-media-stack/">Docker Compose – Media Stack</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2022-08-01
+          </span>
+          
+            <span class="post-author">:: Will Garbutt</span>
+          
+        </div>
+
+        
+
+        
+
+
+      
+        <div class="post-content">
+          
+            I thought I would share my first attempt at a docker compose file. This file deploys the containers I need to download and manage my media files.
+The first part of this script deploys NZBGet, Sonarr, Radarr, and Plex containers and links to volumes for configuration data and NAS storage will be found.
+version: &quot;3.4&quot; services: nzbget: container_name: nzbget image: linuxserver/nzbget:latest restart: unless-stopped network_mode: host environment: - TZ=${TZ} # timezone, defined in .
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/2022-08-01-docker-compose-media-stack/">Read more →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-2/">Cloud Resume Challenge – Part 2</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2022-07-16
+          </span>
+          
+            <span class="post-author">:: Will Garbutt</span>
+          
+        </div>
+
+        
+
+        
+
+
+      
+        <div class="post-content">
+          
+            I’ve tackled some steps of the challenge out of turn here for a bit as it made sense to me to work on the Database/Lambda/API before working on the Javascript that requires them.
+Step 8: Database For this step I really leaned into trying to deploy via CloudFormation first rather than deploying via the GUI.
+Our Database will consist of a DynamoDB as per the recommendation on the Cloud Resume Challenge website.
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/2022-07-16-cloud-resume-challenge-part-2/">Read more →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-3/">Cloud Resume Challenge – Part 3</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2022-07-16
+          </span>
+          
+            <span class="post-author">:: Will Garbutt</span>
+          
+        </div>
+
+        
+
+        
+
+
+      
+        <div class="post-content">
+          
+            Step 7: Javascript We need to include Javascript to call upon our APIs we created earlier. This took me quite a bit of time as I was struggling to find a solution that worked for me, whether I did something wrong in the earlier parts or wasn’t quite understanding things correctly I’m not sure.
+Below is my two Javascripts I created, the first one invokes out POST method, which increases the visitor count value on our DynamoDB
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/2022-07-16-cloud-resume-challenge-part-3/">Read more →</a>
+        </div>
+        
+      </div>
+    
+      <div class="post on-list">
+        <h1 class="post-title">
+          <a href="https://stuffabout.cloud/posts/2022-07-14-aws-vault/">AWS Vault</a>
+        </h1>
+        <div class="post-meta">
+          <span class="post-date">
+            2022-07-14
+          </span>
+          
+            <span class="post-author">:: Will Garbutt</span>
+          
+        </div>
+
+        
+
+        
+
+
+      
+        <div class="post-content">
+          
+            Let me tell you about a neat little tool I recently discovered to make AWS logins easier. Its called AWS Vault, its developed by a third party named 99Designs. The link to the GitHub repository is here.
+AWS Vault allows you to store IAM credentials to your OS keystore and then generates temporary credentials from those to use for your chosen shell. I myself use Windows and Powershell.
+Here is a run through on the install process I followed.
+          
+        </div>
+
+        
+        <div>
+          <a class="read-more button"
+            href="/posts/2022-07-14-aws-vault/">Read more →</a>
+        </div>
+        
+      </div>
+    
+    <div class="pagination">
+  <div class="pagination__buttons">
+    
+    
+      <span class="button next">
+        <a href="/posts/page/2/">
+          <span class="button__text">Older posts</span>
+          <span class="button__icon">→</span>
+        </a>
+      </span>
+    
+  </div>
+</div>
+
+  </div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>2022</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://stuffabout.cloud/assets/main.js"></script>
+<script src="https://stuffabout.cloud/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
