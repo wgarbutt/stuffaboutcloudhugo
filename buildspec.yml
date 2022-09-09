@@ -1,26 +1,21 @@
 version: 0.2
-
+ 
 phases:
   install:
     commands:
-      - echo Entered the install phase...
-      - apt-get -qq update && apt-get -qq install curl
-      - apt-get -qq install asciidoctor
-      - curl -s -L https://github.com/gohugoio/hugo/releases/download/v0.102.3/hugo_0.102.3_Linux-64bit.deb -o hugo.deb
+      - apt-get update
+      - echo Installing hugo
+      - curl -L -o hugo.deb https://github.com/gohugoio/hugo/releases/download/v0.102.3/hugo_0.102.3_Linux-64bit.deb
       - dpkg -i hugo.deb
-    finally:
-      - echo Installation done
+  pre_build:
+    commands:
+      - echo In pre_build phase..
+      - echo Current directory is $CODEBUILD_SRC_DIR
+      - ls -la
   build:
     commands:
-      - echo Entered the build phase ...
-      - echo Build started on `date`
-      - cd $CODEBUILD_SRC_DIR
-      - rm -f buildspec.yml && rm -f .git && rm -f README.md
-      - hugo -D
-    finally:
-      - echo Building the HTML files finished
+      - hugo -v
 artifacts:
   files:
     - '**/*'
-  base-directory: $CODEBUILD_SRC_DIR/public/
-  discard-paths: no
+  base-directory: public
