@@ -4,6 +4,7 @@ title = 'Stuff About Cloud'
 theme = "terminal"
 paginate = 3
 disqusShortname = "stuffaboutcloud"
+googleAnalytics = "G-LVFCMEM41W"
 [params]
   # dir name of your main content (default is `content/posts`).
   # the list of set content will show up on your index page (baseurl).
