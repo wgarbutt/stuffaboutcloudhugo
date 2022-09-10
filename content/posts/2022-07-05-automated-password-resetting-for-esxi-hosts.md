@@ -1,8 +1,8 @@
 ---
 title: Automated password resetting for ESXi Hosts
-author: Will Garbutt
 date: 2022-07-05
-draft: false
+tags:
+- ESXi
 ---
 
 A few months ago I was tasked with finding a solution for resetting root passwords for 800+ VMWare ESXi hosts on a regular schedule.

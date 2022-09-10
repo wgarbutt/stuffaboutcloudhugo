@@ -1,6 +1,7 @@
 ---
 title: Docker Compose – Media Stack
-author: Will Garbutt
+tags:
+- docker
 
 date: 2022-08-01
 

@@ -1,8 +1,9 @@
 ---
 title: Cloud Resume Challenge – Part 2
-author: Will Garbutt
-
 date: 2022-07-16
+tags:
+- cloudresume
+- aws
 ---
 
 

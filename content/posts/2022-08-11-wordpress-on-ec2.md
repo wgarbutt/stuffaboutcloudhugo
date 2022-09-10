@@ -1,6 +1,7 @@
 ---
 title: WordPress on EC2
-author: Will Garbutt
+tags:
+- aws
 
 date: 2022-08-11
 

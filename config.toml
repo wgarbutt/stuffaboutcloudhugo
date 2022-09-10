@@ -14,7 +14,7 @@ googleAnalytics = "G-LVFCMEM41W"
   themeColor = "orange"
 
   # if you set this to 0, only submenu trigger will be visible
-  showMenuItems = 2
+  showMenuItems = 5
 
   # show selector to switch language
   showLanguageSelector = false
@@ -82,12 +82,20 @@ googleAnalytics = "G-LVFCMEM41W"
       logoText = "Stuff About Cloud"
       logoHomeLink = "/"
 
-    # [languages.en.menu]
-    #   [[languages.en.menu.main]]
-    #     identifier = "about"
-    #     name = "About"
-    #     url = "/about"
-      # [[languages.en.menu.main]]
-      #   identifier = "showcase"
-      #   name = "Showcase"
-      #   url = "/showcase"
+    [languages.en.menu]
+      [[languages.en.menu.main]]
+        identifier = "cloudcv"
+        name = "Cloud CV"
+        url = "Https://will-garbutt.me"
+      [[languages.en.menu.main]]
+        identifier = "Github"
+        name = "GitHub"
+        url = "https://github.com/wgarbutt"
+      [[languages.en.menu.main]]
+        identifier = "linkedin"
+        name = "LinkedIn"
+        url = "https://www.linkedin.com/in/will-garbutt/"
+      [[languages.en.menu.main]]
+        identifier = "email"
+        name = "Email"
+        url = "mailto:wgarbutt@gmail.com"
