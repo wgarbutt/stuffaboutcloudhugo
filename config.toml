@@ -2,8 +2,8 @@ baseURL = 'https://stuffabout.cloud'
 languageCode = 'en-us'
 title = 'Stuff About Cloud'
 theme = "terminal"
-paginate = 5
-disqusShortname = 'stuffaboutcloud'
+paginate = 3
+disqusShortname = "stuffaboutcloud"
 [params]
   # dir name of your main content (default is `content/posts`).
   # the list of set content will show up on your index page (baseurl).
