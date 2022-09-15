@@ -17,7 +17,7 @@ Coincidently the same day my bill arrived I found a post on Reddit suggesting to
 
 ## What is Hugo 
 Hugo is a static site generator written in Go which produces incredibly fast and efficient HTML pages from Markdown files
-More here (link here)
+
 
 ## Installing Hugo
 Installing Hugo was pretty straightforward. I already had Chocolatey installed so went the easy approach and simply ran 
