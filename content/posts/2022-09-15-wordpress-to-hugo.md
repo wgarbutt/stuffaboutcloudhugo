@@ -1,21 +1,23 @@
 —
-title: Wordpress to Hugo
-date: 2022-09-15
+title: WordPress to Hugo
 tags:
-- AWS
+- aws
+
+date: 2022-09-15
+
 —
 
 
-#Migrating Wordpress to Hugo
+# Migrating Wordpress to Hugo
 
 After my first full month hosting this blog on an EC2 instance (link here) I was billed roughly $20. 
 Coincidently the same day my bill arrived I found a post on Reddit suggesting to someone to move away from Wordpress and to utilise a static webpage generated via Hugo
 
-##What is Hugo 
+## What is Hugo 
 Hugo is a static site generator written in Go which produces incredibly fast and efficient HTML pages from Markdown files
 More here (link here)
 
-##Installing Hugo
+## Installing Hugo
 Installing Hugo was pretty straightforward. I already had Chocolatey installed so went the easy approach and simply ran 
 
 ‘’’powershell
@@ -35,7 +37,7 @@ Next was time to choose a theme. I went over to themes.gohugo.io and had a look 
 
 Installation of the theme was very straightforward, simply submodule the git location to your site folder and that’s it. 
 
-##Migrating Wordpress 
+## Migrating Wordpress 
 I needed to export my existing Wordpress posts to markdown files in order to import them into my new Hugo site
 There were a lot of options available, but I eventually ended up using this  https://github.com/SchumacherFM/wordpress-to-hugo-exporter
 custom Wordpress plugin to convert the posts to markdown. 
@@ -50,7 +52,7 @@ I created an S3 bucket with the same name as this blogs url, turned on public ac
 
 Next we need to upload the contents from your Hugo/Public folder to your new S3 bucket. Once that’s done you’ll have a fully functional Hugo website running on AWS!
 
-##Domain
+## Domain
 I wanted this site to work with my purchased domain name and to also work on HTTPS.
 I utilised AWS ACM console to create a certificate for my domain that I could use to secure my blog. The process for that is rather straightforward following this article from AWS https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html
 I chose the DNS validation option. This certificate is free to secure services you deploy on AWS.
