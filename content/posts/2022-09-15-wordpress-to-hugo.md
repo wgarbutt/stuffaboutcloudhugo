@@ -22,18 +22,18 @@ More here (link here)
 ## Installing Hugo
 Installing Hugo was pretty straightforward. I already had Chocolatey installed so went the easy approach and simply ran 
 
-'''powershell
+```powershell
 choco install hugo -confirm
-'''
+```
 
 There are also options to install via scope or  if you have go installed, compile via GitHub 
 
 I then used the QuickStart guide to setup a example website so I could get an idea of what I needed
 
 
-'''powershell
+```powershell
 hugo new site quickstart
-'''
+```
 
 Next was time to choose a theme. I went over to themes.gohugo.io and had a look around, finally choosing Hello Friend (a little bit because it reminded me of Mr. Robot)
 
