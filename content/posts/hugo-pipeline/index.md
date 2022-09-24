@@ -2,8 +2,7 @@
 title: Hugo Publishing Pipeline
 tags:
 - aws
-images:
-- cover.png
+
 description: "Using AWS CodePipeline and Lambda to fully automate deployment from Commit to Publish"
 date: 2022-09-15
 
@@ -12,6 +11,8 @@ date: 2022-09-15
 Now that I have this blog fully migrated over from Wordpress to Hugo pages I wanted to share with you the deployment pipeline that I created that takes care of publishing new posts.
 
 ## Overview
+
+
 ![](/Images/HugoPipeline/pipeline-flow.png)
 The AWS Code Pipeline is comprised of four stages that automatically take source code, compile it from markdown pages to HTML, stores it, and refreshes the CDN cache.
 
