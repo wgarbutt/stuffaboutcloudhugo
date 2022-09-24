@@ -1,8 +1,8 @@
 ---
-title: Hugo publishing pipeline
+title: Hugo Publishing Pipeline
 tags:
 - aws
-images: "/Images/HugoPipeline/banner.png"
+images: ["/Images/HugoPipeline/banner.png"]
 description: "Using AWS CodePipeline and Lambda to fully automate deployment from Commit to Publish"
 date: 2022-09-15
 
