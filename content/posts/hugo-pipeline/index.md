@@ -2,12 +2,11 @@
 title: Hugo Publishing Pipeline
 tags:
 - aws
-images: ["/Images/HugoPipeline/banner.png"]
+images: ["/banner.png"]
 description: "Using AWS CodePipeline and Lambda to fully automate deployment from Commit to Publish"
 date: 2022-09-15
 
 ---
-![](/Images/HugoPipeline/banner.png)
 
 Now that I have this blog fully migrated over from Wordpress to Hugo pages I wanted to share with you the deployment pipeline that I created that takes care of publishing new posts.
 
