@@ -59,8 +59,8 @@ googleAnalytics = "G-LVFCMEM41W"
   # set Twitter handles for Twitter cards
   # see https://developer.twitter.com/en/docs/tweets/optimize-with-cards/guides/getting-started#card-and-content-attribution
   # do not include @
-  creator = ""
-  site = ""
+  creator = "wgarbutt"
+  site = "wgarbutt"
 
 [languages]
   [languages.en]
