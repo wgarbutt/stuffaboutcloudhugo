@@ -4,6 +4,7 @@ tags:
 - aws
 description: "Using AWS CodePipeline and Lambda to fully automate deployment from Commit to Publish"
 date: 2022-09-15
+image: https://stuffabout.cloud/posts/hugo-pipeline/cover.png
 
 ---
 
