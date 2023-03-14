@@ -5,21 +5,21 @@ isoCode = "en"
 weight = 1
 rtl = false
 
-title = "Stuff About Cloud"
+title = "Blowfish"
 # logo = "img/logo.png"
 # description = "My awesome website"
 # copyright = "Copy, _right?_ :thinking_face:"
 
 dateFormat = "2 January 2006"
 
-[author]
-name = "Will Garbutt"
-image = "img/me.jpg"
-headline = "A collection of things I've learnt about the Cloud"
-bio = "A little bit about me"
-links = [
-    { email = "mailto:wgarbutt@gmail.com" },
-    { link = "https://will-garbutt.me" },
+# [author]
+#   name = "Your name here"
+#   image = "img/blowfish_logo.png"
+#   headline = "I'm only human"
+#   bio = "A little bit about you"
+#   links = [
+#     { email = "mailto:hello@your_domain.com" },
+#     { link = "https://link-to-some-website.com/" },
 #     { amazon = "https://www.amazon.com/hz/wishlist/ls/wishlist-id" },
 #     { apple = "https://www.apple.com" },
 #     { blogger = "https://username.blogspot.com/" },
@@ -30,7 +30,7 @@ links = [
 #     { facebook = "https://facebook.com/username" },
 #     { flickr = "https://www.flickr.com/photos/username/" },
 #     { foursquare = "https://foursquare.com/username" },
-    { github = "https://github.com/wgarbutt" },
+#     { github = "https://github.com/username" },
 #     { gitlab = "https://gitlab.com/username" },
 #     { google = "https://www.google.com/" },
 #     { hashnode = "https://username.hashnode.dev" },
@@ -60,4 +60,4 @@ links = [
 #     { whatsapp = "https://wa.me/phone-number" },
 #     { youtube = "https://youtube.com/username" },
 #     { ko-fi = "https://ko-fi.com/username" },
-  ]
+#   ]

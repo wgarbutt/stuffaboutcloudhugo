@@ -5,7 +5,7 @@ phases:
     commands:
       - apt-get update
       - echo Installing hugo
-      - curl -L -o hugo.deb https://github.com/gohugoio/hugo/releases/download/v0.111.3/hugo_0.111.3_linux-amd64.deb
+      - curl -L -o hugo.deb https://github.com/gohugoio/hugo/releases/download/v0.102.3/hugo_0.102.3_Linux-64bit.deb
       - dpkg -i hugo.deb
   pre_build:
     commands:

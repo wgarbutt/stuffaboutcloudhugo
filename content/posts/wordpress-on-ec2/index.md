@@ -91,8 +91,7 @@ sudo rm /tmp/db.setup
 
 ### STEP 8 - Browse to http://your_instance_public_ipv4_ip
 
-</pre>
-</div>
+
 
 ### Configuring HTTPS
 

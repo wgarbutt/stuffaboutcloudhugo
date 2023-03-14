@@ -10,10 +10,10 @@
 # overridden by providing a weight value. The menu will then be
 # ordered by weight from lowest to highest.
 
-#[[main]]
-#  name = "Blog"
-#  pageRef = "posts"
-#  weight = 10
+# [[main]]
+# name = "Blog"
+# pageRef = "posts"
+# weight = 10
 
 #[[main]]
 #  name = "Parent"
@@ -31,27 +31,36 @@
 #  pageRef = "posts"
 #  weight = 20
 
-#[[subnavigation]]
-#  name = "An interesting topic"
-#  pageRef = "tags/interesting-topic"
-#  weight = 10
 
-#[[subnavigation]]
-#  name = "My Awesome Category"
-#  pre = "github"
-#  pageRef = "categories/awesome"
-#  weight = 20
 
-#[[main]]
-#  name = "Categories"
-#  pageRef = "categories"
-#  weight = 20
+[[main]]
+identifier = "github"
+pre = "github"
+url = "https://github.com/wgarbutt"
+weight = 20
 
-#[[main]]
-#  name = "Tags"
-#  pageRef = "tags"
-#  weight = 30
+[[main]]
+identifier = "linkedin"
+pre = "Linkedin"
+url = "https://www.linkedin.com/in/will-garbutt/"
+weight = 20
 
+[[main]]
+identifier = "resume"
+pre = "mug-hot"
+url = "https://will-garbutt.me/"
+weight = 20
+
+[[main]]
+identifier = "email"
+pre = "email"
+url = "mailto:wgarbutt.blog@gmail.com/"
+weight = 20
+
+[[main]]
+name = "Tags"
+pageRef = "tags"
+weight = 20
 
 # -- Footer Menu --
 # The footer menu is displayed at the bottom of the page, just before

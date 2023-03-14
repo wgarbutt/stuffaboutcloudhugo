@@ -1,6 +1,7 @@
 ---
 title: Cloud Resume Challenge – Part 1
-
+series: ["Cloud Resume Challenge"]
+series_order: 1
 date: 2022-07-14
 tags:
 - cloudresume

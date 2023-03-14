@@ -4,7 +4,9 @@ tags:
 - aws
 description: "Using AWS CodePipeline and Lambda to fully automate deployment from Commit to Publish"
 date: 2022-09-15
-images: "https://stuffabout.cloud/posts/hugo-pipeline/cover.png"
+showtableofcontents: true
+showtaxonomies: true
+#images: "https://stuffabout.cloud/posts/hugo-pipeline/cover.png"
 
 ---
 
@@ -18,7 +20,9 @@ The AWS Code Pipeline is comprised of four stages that automatically take source
 
 
 #### Source
-The code Pipeline is triggered when a commit is pushed to the Github repository that stores the source code for this blog ([here][1] if you are interested).
+The code Pipeline is triggered when a commit is pushed to the Github repository that stores the source code for this blog (listed below if you are interested)
+{{< github repo="wgarbutt/stuffaboutcloudhugo" >}}
+
 I setup a GitHub (version 2) connection provider and followed the prompts to allow Code Pipeline to monitor a specified repository and branch for any changes.
 
 

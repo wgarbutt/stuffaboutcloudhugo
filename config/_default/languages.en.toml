@@ -5,8 +5,8 @@ isoCode = "en"
 weight = 1
 rtl = false
 
-title = "Stuff About Cloud"
-# logo = "img/logo.png"
+title = "StuffAbout.Cloud"
+ logo = "img/logo.png"
 # description = "My awesome website"
 # copyright = "Copy, _right?_ :thinking_face:"
 
@@ -38,7 +38,7 @@ links = [
 #     { keybase = "https://keybase.io/username" },
 #     { kickstarter = "https://www.kickstarter.com/profile/username" },
 #     { lastfm = "https://lastfm.com/user/username" },
-#     { linkedin = "https://linkedin.com/in/username" },
+    { linkedin = "https://www.linkedin.com/in/will-garbutt/" },
 #     { mastodon = "https://mastodon.instance/@username" },
 #     { medium = "https://medium.com/username" },
 #     { microsoft = "https://www.microsoft.com/" },

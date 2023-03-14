@@ -2,7 +2,8 @@
 title: WordPress to Hugo
 tags:
 - aws
-
+showtableofcontents: true
+showtaxonomies: true
 date: 2022-09-15
 
 ---
