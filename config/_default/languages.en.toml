@@ -6,7 +6,7 @@ weight = 1
 rtl = false
 
 title = "StuffAbout.Cloud"
- logo = "img/logo.png"
+logo = "img/logo.png"
 # description = "My awesome website"
 # copyright = "Copy, _right?_ :thinking_face:"
 
@@ -16,7 +16,7 @@ dateFormat = "2 January 2006"
 name = "Will Garbutt"
 image = "img/me.jpg"
 headline = "A collection of things I've learnt about the Cloud"
-bio = "A little bit about me"
+#bio = "A little bit about me"
 links = [
     { email = "mailto:wgarbutt@gmail.com" },
     { link = "https://will-garbutt.me" },

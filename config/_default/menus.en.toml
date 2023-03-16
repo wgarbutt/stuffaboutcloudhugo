@@ -47,7 +47,7 @@ weight = 20
 
 [[main]]
 identifier = "resume"
-pre = "mug-hot"
+pre = "link"
 url = "https://will-garbutt.me/"
 weight = 20
 
