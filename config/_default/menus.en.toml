@@ -40,7 +40,7 @@ url = "https://github.com/wgarbutt"
 weight = 20
 
 [[main]]
-identifier = "linkedin"
+identifier = "linkn"
 pre = "Linkedin"
 url = "https://www.linkedin.com/in/will-garbutt/"
 weight = 20
