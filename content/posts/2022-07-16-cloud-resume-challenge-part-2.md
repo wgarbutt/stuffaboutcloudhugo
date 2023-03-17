@@ -6,6 +6,12 @@ date: 2022-07-16
 tags:
 - cloudresume
 - aws
+
+showtableofcontents: true
+showtaxonomies: true
+showsummary: true
+summary: "Part 2 of my Cloud Resume Challenge attempt" 
+ 
 ---
 
 

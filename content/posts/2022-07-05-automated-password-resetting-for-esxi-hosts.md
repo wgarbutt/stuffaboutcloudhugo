@@ -3,7 +3,11 @@ title: Automated password resetting for ESXi Hosts
 date: 2022-07-05
 tags:
 - VMWare
-layout: "simple"
+showtableofcontents: true
+showtaxonomies: true
+showsummary: true
+summary: "Using a PowerCLI script to change 800+ ESXi hosts root passwords monthly" 
+
 ---
 
 A few months ago I was tasked with finding a solution for resetting root passwords for 800+ VMWare ESXi hosts on a regular schedule.

@@ -2,9 +2,11 @@
 title: WordPress to Hugo
 tags:
 - aws
+date: 2022-09-15
 showtableofcontents: true
 showtaxonomies: true
-date: 2022-09-15
+showsummary: true
+summary: "Moving this blog from an AWS EC2 instance with Wordpress to an S3 bucket hosting a Hugo deployed static website" 
 
 ---
 

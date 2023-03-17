@@ -7,6 +7,11 @@ tags:
 - cloudresume
 - aws
 
+showtableofcontents: true
+showtaxonomies: true
+showsummary: true
+summary: "The foundations of my Cloud Resume Challenge attempt" 
+
 ---
 
 I'm the kind of person who is never done with learning and trying to align my skillset with industry demand. I've done a lot of VMWare training and certification over the years and decided it was time to branch out to one of the popular public cloud offerings.

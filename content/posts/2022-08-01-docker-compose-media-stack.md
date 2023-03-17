@@ -5,6 +5,11 @@ tags:
 
 date: 2022-08-01
 
+showtableofcontents: true
+showtaxonomies: true
+showsummary: true
+summary: "Having a go at Docker compose" 
+
 ---
 
 

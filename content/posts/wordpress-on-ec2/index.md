@@ -2,8 +2,11 @@
 title: WordPress on EC2
 tags:
 - aws
-
 date: 2022-08-11
+showtableofcontents: true
+showtaxonomies: true
+showsummary: true
+summary: "Moving my blog from Azure to AWS" 
 
 ---
 ## WordPress on EC2
