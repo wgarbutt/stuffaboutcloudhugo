@@ -6,6 +6,8 @@ description: "Using AWS CodePipeline and Lambda to fully automate deployment fro
 date: 2022-09-15
 showtableofcontents: true
 showtaxonomies: true
+showsummary: true
+summary: "I create an blog post deployment pipeline using AWS CodePipeline and Lambda" 
 #images: "https://stuffabout.cloud/posts/hugo-pipeline/cover.png"
 
 ---
