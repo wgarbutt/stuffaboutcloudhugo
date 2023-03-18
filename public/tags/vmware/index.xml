@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>VMWare on StuffAbout.Cloud</title>
+    <link>https://stuffabout.cloud/tags/vmware/</link>
+    <description>Recent content in VMWare on StuffAbout.Cloud</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 05 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://stuffabout.cloud/tags/vmware/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Automated password resetting for ESXi Hosts</title>
+      <link>https://stuffabout.cloud/posts/2022-07-05-automated-password-resetting-for-esxi-hosts/</link>
+      <pubDate>Tue, 05 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/2022-07-05-automated-password-resetting-for-esxi-hosts/</guid>
+      <description>A few months ago I was tasked with finding a solution for resetting root passwords for 800+ VMWare ESXi hosts on a regular schedule.</description>
+    </item>
+    
+  </channel>
+</rss>

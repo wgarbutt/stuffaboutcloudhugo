@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>StuffAbout.Cloud</title>
+    <link>https://stuffabout.cloud/</link>
+    <description>Recent content on StuffAbout.Cloud</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Thu, 15 Sep 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://stuffabout.cloud/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hugo Publishing Pipeline</title>
+      <link>https://stuffabout.cloud/posts/hugo-pipeline/</link>
+      <pubDate>Thu, 15 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/hugo-pipeline/</guid>
+      <description>Now that I have this blog fully migrated over from Wordpress to Hugo pages I wanted to share with you the deployment pipeline that I created that takes care of publishing new posts.</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="https://stuffabout.cloud/posts/hugo-pipeline/cover.png" />
+    </item>
+    
+    <item>
+      <title>WordPress to Hugo</title>
+      <link>https://stuffabout.cloud/posts/hugo-to-wordpress/</link>
+      <pubDate>Thu, 15 Sep 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/hugo-to-wordpress/</guid>
+      <description>Migrating Wordpress to Hugo&gt; Migrating Wordpress to Hugo # After my first full month hosting this blog on an EC2 instance (link here) I was billed roughly $20.</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="https://stuffabout.cloud/posts/hugo-to-wordpress/cover.png" />
+    </item>
+    
+    <item>
+      <title>WordPress on EC2</title>
+      <link>https://stuffabout.cloud/posts/wordpress-on-ec2/</link>
+      <pubDate>Thu, 11 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/wordpress-on-ec2/</guid>
+      <description>WordPress on EC2&gt; WordPress on EC2 # I originally had this blog hosted on Azure with a borrowed MSDN subscription credit with the idea that I would eventually get around to document what I had learnt.</description>
+      <media:content xmlns:media="http://search.yahoo.com/mrss/" url="https://stuffabout.cloud/posts/wordpress-on-ec2/feature.png" />
+    </item>
+    
+    <item>
+      <title>Docker Compose – Media Stack</title>
+      <link>https://stuffabout.cloud/posts/2022-08-01-docker-compose-media-stack/</link>
+      <pubDate>Mon, 01 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/2022-08-01-docker-compose-media-stack/</guid>
+      <description>I thought I would share my first attempt at a docker compose file.</description>
+      
+    </item>
+    
+    <item>
+      <title>Cloud Resume Challenge – Part 2</title>
+      <link>https://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-2/</link>
+      <pubDate>Sat, 16 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-2/</guid>
+      <description>I’ve tackled some steps of the challenge out of turn here for a bit as it made sense to me to work on the Database/Lambda/API before working on the Javascript that requires them.</description>
+      
+    </item>
+    
+    <item>
+      <title>Cloud Resume Challenge – Part 3</title>
+      <link>https://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-3/</link>
+      <pubDate>Sat, 16 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/2022-07-16-cloud-resume-challenge-part-3/</guid>
+      <description>Step 7: Javascript&gt; Step 7: Javascript # We need to include Javascript to call upon our APIs we created earlier.</description>
+      
+    </item>
+    
+    <item>
+      <title>AWS Vault</title>
+      <link>https://stuffabout.cloud/posts/2022-07-14-aws-vault/</link>
+      <pubDate>Thu, 14 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/2022-07-14-aws-vault/</guid>
+      <description>Let me tell you about a neat little tool I recently discovered to make AWS logins easier.</description>
+      
+    </item>
+    
+    <item>
+      <title>Cloud Resume Challenge – Part 1</title>
+      <link>https://stuffabout.cloud/posts/2022-07-14-cloud-resume-challenge-part-1/</link>
+      <pubDate>Thu, 14 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/2022-07-14-cloud-resume-challenge-part-1/</guid>
+      <description>I&amp;rsquo;m the kind of person who is never done with learning and trying to align my skillset with industry demand.</description>
+      
+    </item>
+    
+    <item>
+      <title>Automated password resetting for ESXi Hosts</title>
+      <link>https://stuffabout.cloud/posts/2022-07-05-automated-password-resetting-for-esxi-hosts/</link>
+      <pubDate>Tue, 05 Jul 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/2022-07-05-automated-password-resetting-for-esxi-hosts/</guid>
+      <description>A few months ago I was tasked with finding a solution for resetting root passwords for 800+ VMWare ESXi hosts on a regular schedule.</description>
+      
+    </item>
+    
+  </channel>
+</rss>

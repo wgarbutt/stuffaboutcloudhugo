@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>docker on StuffAbout.Cloud</title>
+    <link>https://stuffabout.cloud/tags/docker/</link>
+    <description>Recent content in docker on StuffAbout.Cloud</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 01 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://stuffabout.cloud/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Docker Compose – Media Stack</title>
+      <link>https://stuffabout.cloud/posts/2022-08-01-docker-compose-media-stack/</link>
+      <pubDate>Mon, 01 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://stuffabout.cloud/posts/2022-08-01-docker-compose-media-stack/</guid>
+      <description>I thought I would share my first attempt at a docker compose file.</description>
+    </item>
+    
+  </channel>
+</rss>
