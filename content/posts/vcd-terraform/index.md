@@ -1,6 +1,6 @@
 ---
 title: vCloud Director and Terraform
-date: 2023-03-20
+date: 2023-03-19
 tags:
 - VMWare
 showtableofcontents: true

@@ -98,7 +98,7 @@ Then in the root of your site repository, create a `netlify.toml` file:
 [build.environment]
   NODE_ENV = "production"
   GO_VERSION = "1.16"
-  TZ = "UTC"  # Set to preferred timezone
+  TZ = "NZDT"  # Set to preferred timezone
 
 [context.production.environment]
   HUGO_VERSION = "0.104.1"

@@ -66,7 +66,7 @@ We need to talk about these custom scripts first, as we need the IDs of the scri
 Set-ESXiPassword -HostName '[HostName]' -UserName '[UserName]' -OldPassword '[OldPassword]' -NewPassword '[NewPassword]'   
 ```
 
-This script logs into a host directly via powershell and powercli modules, Passwordstate passes the common variables such as OldPassword, NewPasswork, Username etc. The Set-VMHostAccount command is actually doing all the heavy lifting here. The rest of the script is some simple error handling.
+This script logs into a host directly via powershell and powercli modules, Passwordstate passes the common variables such as OldPassword, NewPassword, Username etc. The Set-VMHostAccount command is actually doing all the heavy lifting here. The rest of the script is some simple error handling.
 
 PowerCLI is baked into every ESXi host and only requires powershell to be open from the Passwordstate webserver to the host (port 443).
 
