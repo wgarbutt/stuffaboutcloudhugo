@@ -50,7 +50,7 @@ Replace `/path/to` with the path to your `terraform-provider-vcd` binary. If you
 Now that we have our environment set up, we need to create a vCloud Director provider configuration. This configuration tells Terraform how to connect to your vCloud Director instance.
 
 Create a new file called `provider.tf` in your project directory, and add the following code:
-hcl
+
 
 ```powershell
 provider "vcd" {
@@ -69,7 +69,7 @@ Replace the values in quotes with your own vCloud Director details. The `allow_u
 Now that we have our provider configuration set up, we can start defining our vCloud Director resources. In this example, we'll create a new vApp and VM.
 
 Create a new file called `main.tf` in your project directory, and add the following code:
-hcl
+
 
 ```powershell
 resource "vcd_vapp" "my-vapp" {
