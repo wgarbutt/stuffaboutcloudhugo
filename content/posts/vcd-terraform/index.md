@@ -13,7 +13,7 @@ summary: "We go through deploying VMs to vCloud Director using Terraform"
 ---
 
 
-# Deploying a VM to VMware vCloud Director using Terraform
+
 If you're using VMware vCloud Director to manage your virtual infrastructure, you might be interested in using Terraform to automate the deployment of VMs. Terraform is an open-source tool that allows you to define infrastructure as code, making it easy to manage and version control your infrastructure changes.
 
 In this blog post, we'll walk through the steps to deploy a VM to VMware vCloud Director using Terraform. We'll cover the following topics:
