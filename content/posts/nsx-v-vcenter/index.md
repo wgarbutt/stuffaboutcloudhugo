@@ -28,7 +28,7 @@ First, we need to ensure that no VMs are connected to any logical switches that 
 ### Step 2: Remove all Edges
 Next, we need to delete any Edges we may have deployed. This should be as simple as right-clicking and selecting delete, ensuring these edges are no longer used prior to doing this.
 
-### tep 3: Delete all logical switches
+### Step 3: Delete all logical switches
 Now that the logical switches are disconnected from our running VMs and edges are cleaned up and deleted, we can move onto deleting any remaining logical switches. Select a switch and press delete. A message should appear advising if it's safe to delete or not - this is a great little safety measure.
 
 ### Step 4: Delete any remaining transport zones
