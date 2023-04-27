@@ -67,7 +67,7 @@ Cloudflare also has a simple way to enable HTTPS with just a click of a button.
   
 
 
-Part 2 will be coming soon!
+
 
  [1]: https://aws.amazon.com/certification/certified-cloud-practitioner/
  [2]: https://www.udemy.com/share/103a093@Xyy5BUVKwUTNgK4T9fYuttnh2s3pKp7w8ogebGWcUkt4f_lZ2kycxHVTRAWWeMC-wQ==/

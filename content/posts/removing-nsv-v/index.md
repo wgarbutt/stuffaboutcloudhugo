@@ -3,6 +3,8 @@ title: Goodbye NSX-V - Part 1
 date: 2023-03-26
 tags:
 - VMWare
+series: ["Removing NSX-V"]
+series_order: 1
 showtableofcontents: true
 showtaxonomies: true
 showsummary: true
@@ -10,7 +12,7 @@ summary: "Removing NSX from vCloud Director"
 
 ---
 
-## NSX-V is dead, long live NSX-T. 
+
 It's no secret that NSX-V reached end of life in early 2022, leaving many companies scrambling to migrate their infrastructure to NSX-T. Any competent VMWare engineer should be well aware of this transition and understand the importance of making the switch.
 
 In my workplace, we initially believed that multiple NSX instances were essential for vCloud Director to function, due to its heavy reliance on NSX for support. However, during our NSX migration plan, we discovered that as of version 10.X, this was no longer the case. We were relieved to find out that vCloud Director could continue to operate without an NSX backing, as long as we didn't utilize any NSX functions. Fortunately for me, this was indeed the scenario in our workplace.
