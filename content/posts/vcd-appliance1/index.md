@@ -2,7 +2,7 @@
 title: Deploying VMWare Cloud Director
 date: 2023-05-17
 series: ["VMWare Cloud Director migration"]
-series_order: 2
+series_order: 1
 tags:
 - VMWare
 showtableofcontents: true

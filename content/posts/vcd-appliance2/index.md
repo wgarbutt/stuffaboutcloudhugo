@@ -2,7 +2,7 @@
 title: Migrating VMWare Cloud Director
 date: 2023-05-26
 series: ["VMWare Cloud Director migration"]
-series_order: 1
+series_order: 2
 tags:
 - VMWare
 showtableofcontents: true
