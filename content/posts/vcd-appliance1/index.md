@@ -1,5 +1,5 @@
 ---
-title: VMWare Cloud Director Appliance Migration
+title: Deploying VMWare Cloud Director
 date: 2023-05-17
 series: ["VMWare Cloud Director migration"]
 series_order: 1
@@ -8,7 +8,7 @@ tags:
 showtableofcontents: true
 showtaxonomies: true
 showsummary: true
-summary: "Migrating VMware Cloud Director from Linux Server to Appliance"
+summary: "Deploying my first VCD Appliances"
 
 
 ---
@@ -53,7 +53,7 @@ The Primary appliance system setup page will be displayed.
 
 ### Standby Cell
 1. After setup is complete on the primary cell, log in to the VAMI address of your first secondary cell as the appliance root account you created earlier.
-2. The configuration screen of a secondary cell looks a lot simialr to the primary, except all this cell wants is the details for the NFS share. Place those details in and press finish
+2. The configuration screen of a secondary cell looks a lot similar to the primary, except all this cell wants is the details for the NFS share. Place those details in and press finish
 ![](picture6obs.png)
 The secondary cell will then go through a series of steps to configure itself and gain access to the embedded postgres database
 ![](picture9.png "Setting up the Postgres Database")
