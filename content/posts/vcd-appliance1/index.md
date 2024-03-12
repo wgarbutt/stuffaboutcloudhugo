@@ -46,8 +46,8 @@ Before deploying the new VCD appliances, there are a few prerequisites to take c
 1. Once deployed, access the VAMI address `https://<fqdn>:5480` of your primary appliance and log in using your root account and the password you created earlier.
 The Primary appliance system setup page will be displayed.
 ![](picture3obs.png)
-2. Enter the NFS share details and the database password.
-3. Fill in the details for your VCD Administrator account, your vCenter folder, and click finish. The Primary node will begin setting up the Postgres database and configuring Cloud Director.
+1. Enter the NFS share details and the database password.
+2. Fill in the details for your VCD Administrator account, your vCenter folder, and click finish. The Primary node will begin setting up the Postgres database and configuring Cloud Director.
 ![](picture4obs.png)
 ![](picture5obs.png)
 
