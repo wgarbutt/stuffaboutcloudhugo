@@ -169,4 +169,37 @@ recovery plans, select create plan.
 Give your plan a name and optional description. Click next.
 ![](28.png)
 
-Go through the recovery options to complete the plan.
+Choose you protected and recovery sites 
+![](Picture1.png)
+
+And the protection group we made earlier
+![](Picture2.png)
+
+Now, if we had multiple vCenters at our sites we could specify what particular vCenter we’d like to target. Note you do have the option to choose different configurations for a test and a real failover.
+![](Picture3.png)
+
+We need to map the folders for our VMs between the two vCenters. Again, we can have different configurations between test and a real failover
+![](Picture4.png)
+
+Then choose the respective resource pools for the VMs to live in
+![](Picture5.png)
+ 
+Mapping of the networks is next, choose the source and destination network you’d like your VMs to live in once they migrate
+![](Picture6.png)
+
+On the following screen, you'll find the option to configure IP addressing for VMs that undergo failover. This isn't tied to a particular machine but instead involves setting up a rule set, such as defining a subnet.
+![](Picture7.png)
+
+We also have the option to run custom scripts after a fail over
+![](Picture8.png)
+
+
+We can add an orchestrated set of steps that VCDR will take when recovering a VM
+![](Picture9.png)
+
+And finally, we can choose our ransomware analysis options
+![](Picture10.png)
+
+And that’s VCDR configured and ready to go! In the next post we will look at the different recovery options VCDR has to offer. Stay tuned!
+
+
