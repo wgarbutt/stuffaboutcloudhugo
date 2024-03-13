@@ -62,6 +62,7 @@ section and select “Configure API Token”.
 Here we can validate the token is configured correctly.
 ![](7.png)
 
+### Cloud File System
 Now we can go ahead and setup our cloud file system. On the left side menu, select Cloud
 File System.
 ![](8.png)
@@ -78,6 +79,7 @@ Once completed you will be presented with the status of the storage deployment a
 region its situated in.
 ![](11.png)
 
+### Protected Site
 Now we can move onto setting up our protected site, click the button on the top right labelled
 the same to start the process.
 
@@ -111,6 +113,7 @@ drc network test –scope cloud
 Once we got the firewall sorted, I was able to complete the configuration.
 ![](16.png)
 
+### Register vCenter
 Returning to the VCDR console protected site deployment screen I am now able to register
 my vCenter
 ![](17.png)
@@ -123,6 +126,7 @@ creating protection groups. For me I paused this process and moved on to creatin
 Recovery SDDC.
 ![](19.png)
 
+### Recovery SDDC
 On the left menu, select Recovery SDDC’s. Select Add recovery SDDC on the top right
 corner.
 You can choose either your existing SDDC or get VCDR to deploy one for you. Note that if
@@ -141,9 +145,10 @@ Once I saw the activity was completed in the SDDC the errors disappeared.
 I noticed that some new resource pools were created to cater for VCDRs operations.
 ![](23.png)
 
+### Protection Group
 We can now go back to creating our protection group. Click Protection group on the left
 menu and select Create protection group.
-![](24.png)
+
 
 Give your protection group a name and confirm the protected site details.
 You can choose to use traditional snapshots or high frequency snapshots.
@@ -156,12 +161,12 @@ VM Name pattern is where you select the VMs to be included in your protection gr
 example, I have used Will* to find my VM named WillTest.
 ![](26.png)
 
+### Recovery Plan
 And lastly, we can move onto our Recovery plan creation. On the left side menu choose
 recovery plans, select create plan.
-![](27.png)
+
 
 Give your plan a name and optional description. Click next.
 ![](28.png)
 
-Go through the recovery options as below to complete the plan.
-![](29.png)
+Go through the recovery options to complete the plan.
