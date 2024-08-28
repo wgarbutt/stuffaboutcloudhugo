@@ -17,8 +17,6 @@ summary: "My Homelab Docker Stack: A Deep Dive into Self-Hosted Services"
  So, I've been tinkering with this homelab setup of mine, and I thought it'd be cool to share what I've got going on. If you're into self-hosting stuff and playing around with Docker, you might find this interesting. I'm going to break down the whole stack for you – it's pretty neat, and Im pretty happy with how its turned out. Let's get into it and see what makes this thing tick!
 
 
-## The Foundation: Docker Compose
-
 ## The Foundation: Docker Compose and Learning by Doing
 
 So, this whole project kicked off because I wanted to get my hands dirty with containerization and DevOps stuff. I had dabbled with Docker previously to run some basic services at home but nothing too exciting. I wanted to learn Docker-compose because it seemed to encompass everything I wanted to learn, coding, version control, CI/CD.
